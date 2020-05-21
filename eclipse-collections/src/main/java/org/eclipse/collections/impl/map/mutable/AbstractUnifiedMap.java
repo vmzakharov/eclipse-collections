@@ -960,7 +960,7 @@ public abstract class AbstractUnifiedMap<K, V>
     {
         return this.occupied == 0;
     }
-    // <--------- Bottom insertion
+    // <--------- Bottom of the moving insertion point
 
     // Placed before EntrySet
     protected static boolean nullSafeEquals(Object value, Object other)
