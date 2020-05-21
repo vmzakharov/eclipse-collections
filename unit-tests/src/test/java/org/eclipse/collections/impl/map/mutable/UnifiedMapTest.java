@@ -104,7 +104,7 @@ public class UnifiedMapTest extends UnifiedMapTestCase
     {
         try
         {
-            Field tableField = UnifiedMap.class.getDeclaredField("table");
+            Field tableField = AbstractUnifiedMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
 
             Object[] table = (Object[]) tableField.get(UnifiedMap.newMap(initialCapacity, loadFactor));

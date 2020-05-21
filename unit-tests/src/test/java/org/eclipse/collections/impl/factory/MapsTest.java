@@ -20,6 +20,7 @@ import org.eclipse.collections.api.factory.map.sorted.MutableSortedMapFactory;
 import org.eclipse.collections.api.map.FixedSizeMap;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.map.mutable.AbstractUnifiedMap;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.test.Verify;
 import org.eclipse.collections.impl.test.domain.Key;
@@ -223,7 +224,7 @@ public class MapsTest
     {
         try
         {
-            Field tableField = UnifiedMap.class.getDeclaredField("table");
+            Field tableField = AbstractUnifiedMap.class.getDeclaredField("table");
             tableField.setAccessible(true);
             Object[] table = (Object[]) tableField.get(map);
 
