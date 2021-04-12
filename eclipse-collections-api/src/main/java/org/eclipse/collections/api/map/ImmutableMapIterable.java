@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -33,6 +33,10 @@ public interface ImmutableMapIterable<K, V> extends MapIterable<K, V>
     ImmutableMapIterable<K, V> newWithKeyValue(K key, V value);
 
     ImmutableMapIterable<K, V> newWithAllKeyValues(Iterable<? extends Pair<? extends K, ? extends V>> keyValues);
+
+    ImmutableMapIterable<K, V> newWithMap(Map<? extends K, ? extends V> map);
+
+    ImmutableMapIterable<K, V> newWithMapIterable(MapIterable<? extends K, ? extends V> mapIterable);
 
     ImmutableMapIterable<K, V> newWithAllKeyValueArguments(Pair<? extends K, ? extends V>... keyValuePairs);
 
@@ -146,12 +150,27 @@ public interface ImmutableMapIterable<K, V> extends MapIterable<K, V>
             Function0<? extends VV> zeroValueFactory,
             Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
     {
-        MutableMap<KK, VV> map = Maps.mutable.empty();
-        this.forEach(each ->
-        {
-            KK key = groupBy.valueOf(each);
-            map.updateValueWith(key, zeroValueFactory, nonMutatingAggregator, each);
-        });
+        MutableMap<KK, VV> map = this.aggregateBy(
+                groupBy,
+                zeroValueFactory,
+                nonMutatingAggregator,
+                Maps.mutable.empty());
+        return map.toImmutable();
+    }
+
+    @Override
+    default <K1, V1, V2> ImmutableMapIterable<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        MutableMap<K1, V2> map = Maps.mutable.empty();
+        this.forEachKeyValue((key, value) -> map.updateValueWith(
+                keyFunction.valueOf(key),
+                zeroValueFactory,
+                nonMutatingAggregator,
+                valueFunction.valueOf(value)));
         return map.toImmutable();
     }
 }

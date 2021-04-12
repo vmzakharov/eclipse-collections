@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -14,14 +14,18 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.collections.api.LazyByteIterable;
 import org.eclipse.collections.api.iterator.ByteIterator;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.primitive.ImmutableByteSet;
 import org.eclipse.collections.api.set.primitive.MutableByteSet;
+import org.eclipse.collections.api.tuple.primitive.ByteBytePair;
 import org.eclipse.collections.impl.bag.mutable.primitive.ByteHashBag;
 import org.eclipse.collections.impl.block.factory.primitive.BytePredicates;
 import org.eclipse.collections.impl.collection.immutable.primitive.AbstractImmutableByteCollectionTestCase;
+import org.eclipse.collections.impl.factory.Sets;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.test.Verify;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -87,7 +91,7 @@ public abstract class AbstractImmutableByteHashSetTestCase extends AbstractImmut
         actual.add(iterator.next());
         Assert.assertFalse(iterator.hasNext());
         Assert.assertEquals(expected, actual);
-        Verify.assertThrows(NoSuchElementException.class, (Runnable) iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Override
@@ -227,5 +231,278 @@ public abstract class AbstractImmutableByteHashSetTestCase extends AbstractImmut
         Assert.assertEquals(0, this.newWith().toImmutable().size());
         Assert.assertEquals(1, this.newWith((byte) 1).toImmutable().size());
         Assert.assertEquals(3, this.newWith((byte) 1, (byte) 2, (byte) 3).toImmutable().size());
+    }
+
+    @Test
+    public void union()
+    {
+        this.assertUnion(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5));
+
+        this.assertUnion(
+                this.newWith((byte) 1, (byte) 2, (byte) 3, (byte) 6),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6));
+
+        this.assertUnion(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 3, (byte) 4, (byte) 5, (byte) 6),
+                this.newWith((byte) 1, (byte) 2, (byte) 3, (byte) 4, (byte) 5, (byte) 6));
+
+        this.assertUnion(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertUnion(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 3, (byte) 4, (byte) 5));
+
+        this.assertUnion(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                this.newWith((byte) 1, (byte) 2, (byte) 3));
+    }
+
+    private void assertUnion(ImmutableByteSet set1, ImmutableByteSet set2, ImmutableByteSet expected)
+    {
+        ImmutableByteSet actual = set1.union(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void intersect()
+    {
+        this.assertIntersect(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 3));
+
+        this.assertIntersect(
+                this.newWith((byte) 1, (byte) 2, (byte) 3, (byte) 6),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 3));
+
+        this.assertIntersect(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 3, (byte) 4, (byte) 5, (byte) 6),
+                this.newWith((byte) 3));
+
+        this.assertIntersect(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertIntersect(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith());
+
+        this.assertIntersect(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                this.newWith());
+    }
+
+    private void assertIntersect(ImmutableByteSet set1, ImmutableByteSet set2, ImmutableByteSet expected)
+    {
+        ImmutableByteSet actual = set1.intersect(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void difference()
+    {
+        this.assertDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 1, (byte) 2));
+
+        this.assertDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                this.newWith((byte) 1, (byte) 2, (byte) 3));
+    }
+
+    private void assertDifference(ImmutableByteSet set1, ImmutableByteSet set2, ImmutableByteSet expected)
+    {
+        ImmutableByteSet actual = set1.difference(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void symmetricDifference()
+    {
+        this.assertSymmetricDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 2, (byte) 3, (byte) 4),
+                this.newWith((byte) 1, (byte) 4));
+
+        this.assertSymmetricDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith());
+
+        this.assertSymmetricDifference(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertSymmetricDifference(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                this.newWith((byte) 3, (byte) 4, (byte) 5));
+
+        this.assertSymmetricDifference(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                this.newWith((byte) 1, (byte) 2, (byte) 3));
+    }
+
+    private void assertSymmetricDifference(ImmutableByteSet set1, ImmutableByteSet set2, ImmutableByteSet expected)
+    {
+        ImmutableByteSet actual = set1.symmetricDifference(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void isSubsetOf()
+    {
+        this.assertIsSubsetOf(
+                this.newWith((byte) 1, (byte) 2),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith((byte) 1, (byte) 4),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                false);
+
+        this.assertIsSubsetOf(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(),
+                this.newWith(),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                false);
+    }
+
+    private void assertIsSubsetOf(ImmutableByteSet set1, ImmutableByteSet set2, boolean expected)
+    {
+        boolean actual = set1.isSubsetOf(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void isProperSubsetOf()
+    {
+        this.assertIsProperSubsetOf(
+                this.newWith((byte) 1, (byte) 2),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                true);
+
+        this.assertIsProperSubsetOf(
+                this.newWith((byte) 1, (byte) 4),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(),
+                this.newWith(),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(),
+                this.newWith((byte) 3, (byte) 4, (byte) 5),
+                true);
+
+        this.assertIsProperSubsetOf(
+                this.newWith((byte) 1, (byte) 2, (byte) 3),
+                this.newWith(),
+                false);
+    }
+
+    private void assertIsProperSubsetOf(ImmutableByteSet set1, ImmutableByteSet set2, boolean expected)
+    {
+        boolean actual = set1.isProperSubsetOf(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void isCartesianProduct()
+    {
+        this.assertCartesianProduct(
+                this.newWith((byte) 1, (byte) 2),
+                this.newWith((byte) 3, (byte) 4),
+                Sets.immutable.with(
+                        PrimitiveTuples.pair((byte) 1, (byte) 3),
+                        PrimitiveTuples.pair((byte) 1, (byte) 4),
+                        PrimitiveTuples.pair((byte) 2, (byte) 3),
+                        PrimitiveTuples.pair((byte) 2, (byte) 4)));
+
+        this.assertCartesianProduct(
+                this.newWith((byte) 1, (byte) 2),
+                this.newWith((byte) 1, (byte) 2),
+                Sets.immutable.with(
+                        PrimitiveTuples.pair((byte) 1, (byte) 1),
+                        PrimitiveTuples.pair((byte) 1, (byte) 2),
+                        PrimitiveTuples.pair((byte) 2, (byte) 1),
+                        PrimitiveTuples.pair((byte) 2, (byte) 2)));
+
+        this.assertCartesianProduct(
+                this.newWith((byte) 1, (byte) 2),
+                this.newWith(),
+                Sets.immutable.empty());
+
+        this.assertCartesianProduct(
+                this.newWith(),
+                this.newWith((byte) 1, (byte) 2),
+                Sets.immutable.empty());
+
+        this.assertCartesianProduct(
+                this.newWith(),
+                this.newWith(),
+                Sets.immutable.empty());
+    }
+
+    private void assertCartesianProduct(ImmutableByteSet set1, ImmutableByteSet set2, ImmutableSet<ByteBytePair> expected)
+    {
+        ImmutableSet<ByteBytePair> actual = set1.cartesianProduct(set2).toSet().toImmutable();
+        Assert.assertEquals(expected, actual);
     }
 }

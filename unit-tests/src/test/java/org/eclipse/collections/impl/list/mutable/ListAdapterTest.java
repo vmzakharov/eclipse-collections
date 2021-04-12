@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -98,13 +98,13 @@ public class ListAdapterTest extends AbstractListTestCase
     {
         Object item = new Object();
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> this.newWith(item).get(-1));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> this.newWith(item).get(-1));
     }
 
     @Test
     public void adaptNull()
     {
-        Verify.assertThrows(NullPointerException.class, () -> new ListAdapter<>(null));
-        Verify.assertThrows(NullPointerException.class, () -> ListAdapter.adapt(null));
+        Assert.assertThrows(NullPointerException.class, () -> new ListAdapter<>(null));
+        Assert.assertThrows(NullPointerException.class, () -> ListAdapter.adapt(null));
     }
 }

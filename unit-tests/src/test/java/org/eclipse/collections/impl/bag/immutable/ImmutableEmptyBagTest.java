@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -53,7 +53,10 @@ import static org.eclipse.collections.impl.factory.Iterables.iBag;
 
 public class ImmutableEmptyBagTest extends ImmutableBagTestCase
 {
-    public static final Predicate<String> ERROR_THROWING_PREDICATE = each -> { throw new AssertionError(); };
+    public static final Predicate<String> ERROR_THROWING_PREDICATE = each ->
+    {
+        throw new AssertionError();
+    };
 
     public static final Predicates2<String, Class<Integer>> ERROR_THROWING_PREDICATE_2 = new Predicates2<String, Class<Integer>>()
     {
@@ -79,6 +82,42 @@ public class ImmutableEmptyBagTest extends ImmutableBagTestCase
     public void testFactory()
     {
         Verify.assertInstanceOf(ImmutableEmptyBag.class, Bags.immutable.of());
+    }
+
+    @Override
+    @Test
+    public void anySatisfyWithOccurrences()
+    {
+        ImmutableBag<String> bag = this.newBag();
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> true));
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void allSatisfyWithOccurrences()
+    {
+        ImmutableBag<String> bag = this.newBag();
+        Assert.assertTrue(bag.allSatisfyWithOccurrences((object, value) -> true));
+        Assert.assertTrue(bag.allSatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void noneSatisfyWithOccurrences()
+    {
+        ImmutableBag<String> bag = this.newBag();
+        Assert.assertTrue(bag.noneSatisfyWithOccurrences((object, value) -> true));
+        Assert.assertTrue(bag.noneSatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void detectWithOccurrences()
+    {
+        ImmutableBag<String> bag = this.newBag();
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> true));
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> false));
     }
 
     @Test
@@ -288,7 +327,7 @@ public class ImmutableEmptyBagTest extends ImmutableBagTestCase
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> this.newBag().getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> this.newBag().getOnly());
     }
 
     @Override
@@ -499,7 +538,8 @@ public class ImmutableEmptyBagTest extends ImmutableBagTestCase
     public void collect_target()
     {
         MutableList<Integer> targetCollection = FastList.newList();
-        MutableList<Integer> actual = this.newBag().collect(object -> {
+        MutableList<Integer> actual = this.newBag().collect(object ->
+        {
             throw new AssertionError();
         }, targetCollection);
         Assert.assertEquals(targetCollection, actual);
@@ -511,7 +551,8 @@ public class ImmutableEmptyBagTest extends ImmutableBagTestCase
     public void collectWith_target()
     {
         MutableList<Integer> targetCollection = FastList.newList();
-        MutableList<Integer> actual = this.newBag().collectWith((argument1, argument2) -> {
+        MutableList<Integer> actual = this.newBag().collectWith((argument1, argument2) ->
+        {
             throw new AssertionError();
         }, 1, targetCollection);
         Assert.assertEquals(targetCollection, actual);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -13,6 +13,7 @@ package org.eclipse.collections.impl.multimap.set;
 import java.io.Externalizable;
 import java.io.Serializable;
 
+import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.predicate.Predicate2;
@@ -149,13 +150,13 @@ public final class ImmutableSetMultimapImpl<K, V>
     }
 
     @Override
-    public ImmutableSetMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public ImmutableSetMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.selectKeysMultiValues(predicate, UnifiedSetMultimap.newMultimap()).toImmutable();
     }
 
     @Override
-    public ImmutableSetMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public ImmutableSetMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.rejectKeysMultiValues(predicate, UnifiedSetMultimap.newMultimap()).toImmutable();
     }

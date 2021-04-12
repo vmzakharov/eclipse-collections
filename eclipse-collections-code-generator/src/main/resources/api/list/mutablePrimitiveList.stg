@@ -14,6 +14,7 @@ body(type, name) ::= <<
 
 package org.eclipse.collections.api.list.primitive;
 
+<(auxiliaryImports.(type))(type)>
 import org.eclipse.collections.api.<name>Iterable;
 import org.eclipse.collections.api.block.function.primitive.<name>IntToObjectFunction;
 import org.eclipse.collections.api.block.function.primitive.<name>ToObjectFunction;
@@ -41,6 +42,13 @@ public interface Mutable<name>List extends Mutable<name>Collection, <name>List
 
     <type> set(int index, <type> element);
 
+    default void swap(int index1, int index2)
+    {
+        <type> value = this.get(index1);
+        this.set(index1, this.get(index2));
+        this.set(index2, value);
+    }
+
     <sharedAPI(fileName(primitive), name)>
 
     <mutableAPI(fileName(primitive), type, name)>
@@ -66,7 +74,7 @@ public interface Mutable<name>List extends Mutable<name>Collection, <name>List
     @Override
     default \<V> MutableList\<V> collectWithIndex(<name>IntToObjectFunction\<? extends V> function)
     {
-        int[] index = { 0 };
+        int[] index = {0};
         return this.collect(each -> function.value(each, index[0]++));
     }
 
@@ -151,6 +159,80 @@ allMethods(type) ::= <<
  */
 Mutable<name>List sortThis();
 
+/**
+ * Sorts the internal data structure of this list and returns the list itself as a convenience.
+ */
+default Mutable<name>List sortThis(<name>Comparator comparator)
+{
+    throw new UnsupportedOperationException("sortThis(<name>Comparator comparator) is not supported on " + this.getClass());
+}
+
+/**
+ * Sorts the internal data structure of this list based on the natural order of the key returned by {@code
+ * function}.
+ */
+default \<T> Mutable<name>List sortThisBy(<name>ToObjectFunction\<T> function)
+{
+    return sortThisBy(function, (Comparator\<? super T>) Comparator.naturalOrder());
+}
+
+/**
+ * Sorts the internal data structure of this list based on the key returned by {@code
+ * function} using the provided {@code comparator}.
+ */
+default \<T> Mutable<name>List sortThisBy(<name>ToObjectFunction\<T> function, Comparator\<? super T> comparator)
+{
+    return this.sortThis((i1, i2) -> comparator.compare(function.valueOf(i1), function.valueOf(i2)));
+}
+
+/**
+ * Randomly permutes this list mutating its contents and returns the same list (this).
+ *
+ * Uses {@code java.util.Random} as the source of randomness.
+ */
+default Mutable<name>List shuffleThis()
+{
+    return this.shuffleThis(new Random());
+}
+
+/**
+ * Randomly permutes this list mutating its contents and returns the same list (this).
+ *
+ * Implements the Fisher-Yates shuffle algorithm using the provided source of randomness.
+ */
+default Mutable<name>List shuffleThis(Random rnd)
+{
+    for (int j = this.size() - 1; j > 0; j--)
+    {
+        int k = rnd.nextInt(j + 1);
+        <type> selected  = this.get(j);
+        this.set(j, this.get(k));
+        this.set(k, selected);
+    }
+
+    return this;
+}
+
 >>
 
 noMethods(type) ::= ""
+
+auxiliaryImports ::= [
+    "byte": "allAuxiliaryImports",
+    "short": "allAuxiliaryImports",
+    "char": "allAuxiliaryImports",
+    "int": "allAuxiliaryImports",
+    "long": "allAuxiliaryImports",
+    "float": "allAuxiliaryImports",
+    "double": "allAuxiliaryImports",
+    "boolean": "noAuxiliaryImports"
+]
+
+allAuxiliaryImports(type) ::= <<
+import java.util.Comparator;
+import java.util.Random;
+import org.eclipse.collections.api.block.comparator.primitive.<name>Comparator;
+
+>>
+
+noAuxiliaryImports(type) ::= ""

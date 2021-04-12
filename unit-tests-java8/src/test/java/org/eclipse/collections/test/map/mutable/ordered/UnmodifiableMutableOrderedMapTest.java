@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Two Sigma and others.
+ * Copyright (c) 2021 Two Sigma and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -23,9 +23,9 @@ import org.eclipse.collections.test.UnmodifiableIterableTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.eclipse.collections.impl.test.Verify.assertThrows;
 import static org.eclipse.collections.test.IterableTestCase.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 @RunWith(Java8Runner.class)

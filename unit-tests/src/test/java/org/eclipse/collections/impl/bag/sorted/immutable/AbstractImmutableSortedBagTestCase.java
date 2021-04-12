@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -120,6 +120,41 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         ImmutableSortedBag<Integer> bag1 = SortedBags.immutable.of(1, 1, 1, 4);
         ImmutableSortedBag<Integer> bag2 = SortedBags.immutable.of(1, 1, 1, 3);
         Assert.assertNotEquals(bag1, bag2);
+    }
+
+    @Test
+    public void anySatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.newWith(1, 2, 2);
+        Assert.assertTrue(bag.anySatisfyWithOccurrences((object, value) -> object.equals(1)));
+        Assert.assertTrue(bag.anySatisfyWithOccurrences((object, value) -> object.equals(2) && value == 2));
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> object.equals(2) && value == 6));
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> object.equals(20)));
+    }
+
+    @Test
+    public void allSatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.newWith(1, 2, 2);
+        Assert.assertTrue(bag.allSatisfyWithOccurrences((object, value) -> object > 0));
+        Assert.assertFalse(bag.allSatisfyWithOccurrences((object, value) -> object.equals(1) && value == 1));
+    }
+
+    @Test
+    public void noneSatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.newWith(1, 2, 2);
+        Assert.assertTrue(bag.noneSatisfyWithOccurrences((object, value) -> object > 100));
+        Assert.assertFalse(bag.noneSatisfyWithOccurrences((object, value) -> object.equals(1) && value == 1));
+    }
+
+    @Test
+    public void detectWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.newWith(1, 2, 2);
+        Assert.assertEquals((Integer) 1, bag.detectWithOccurrences((object, value) -> object.equals(1) && value == 1));
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> object.equals(100)));
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> object.equals(1) && value == 100));
     }
 
     @Test
@@ -805,10 +840,10 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
             Integer integer = iterator.next();
             Assert.assertEquals(i + 1, integer.intValue());
         }
-        Verify.assertThrows(NoSuchElementException.class, (Runnable) iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
         Iterator<Integer> intItr = integers.iterator();
         intItr.next();
-        Verify.assertThrows(UnsupportedOperationException.class, intItr::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, intItr::remove);
     }
 
     @Override
@@ -1048,7 +1083,7 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         Assert.assertEquals(UnifiedMap.newWithKeysValues(1, 1, 2, 2, 3, 3), bag1.groupByUniqueKey(id -> id));
 
         ImmutableSortedBag<Integer> bag2 = this.classUnderTest(Comparators.reverseNaturalOrder());
-        Verify.assertThrows(IllegalStateException.class, () -> bag2.groupByUniqueKey(id -> id));
+        Assert.assertThrows(IllegalStateException.class, () -> bag2.groupByUniqueKey(id -> id));
     }
 
     @Test
@@ -1060,7 +1095,7 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
                 bag1.groupByUniqueKey(id -> id, UnifiedMap.newWithKeysValues(0, 0)));
 
         ImmutableSortedBag<Integer> bag2 = this.newWith(1, 2, 3);
-        Verify.assertThrows(IllegalStateException.class, () -> bag2.groupByUniqueKey(id -> id, UnifiedMap.newWithKeysValues(2, 2)));
+        Assert.assertThrows(IllegalStateException.class, () -> bag2.groupByUniqueKey(id -> id, UnifiedMap.newWithKeysValues(2, 2)));
     }
 
     @Test
@@ -1310,9 +1345,9 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         integers1.forEach(0, 9, result3::add);
         Assert.assertEquals(Lists.immutable.with(4, 4, 4, 4, 3, 3, 3, 2, 2, 1), result3);
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEach(-1, 0, result::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEach(0, -1, result::add));
-        Verify.assertThrows(IllegalArgumentException.class, () -> integers1.forEach(7, 5, result::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEach(-1, 0, result::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEach(0, -1, result::add));
+        Assert.assertThrows(IllegalArgumentException.class, () -> integers1.forEach(7, 5, result::add));
 
         ImmutableSortedBag<Integer> integers2 = this.classUnderTest();
         MutableList<Integer> mutableList = Lists.mutable.of();
@@ -1336,9 +1371,9 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         integers1.forEachWithIndex(0, 9, (each, index) -> builder3.append(each).append(index));
         Assert.assertEquals("40414243343536272819", builder3.toString());
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEachWithIndex(-1, 0, new AddToList(Lists.mutable.empty())));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEachWithIndex(0, -1, new AddToList(Lists.mutable.empty())));
-        Verify.assertThrows(IllegalArgumentException.class, () -> integers1.forEachWithIndex(7, 5, new AddToList(Lists.mutable.empty())));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEachWithIndex(-1, 0, new AddToList(Lists.mutable.empty())));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> integers1.forEachWithIndex(0, -1, new AddToList(Lists.mutable.empty())));
+        Assert.assertThrows(IllegalArgumentException.class, () -> integers1.forEachWithIndex(7, 5, new AddToList(Lists.mutable.empty())));
 
         ImmutableSortedBag<Integer> integers2 = this.classUnderTest();
         MutableList<Integer> mutableList1 = Lists.mutable.of();
@@ -1377,7 +1412,7 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         Assert.assertEquals(3, this.newWith("one", "one", "two", "two", "three", "three").topOccurrences(1).size());
         Assert.assertEquals(0, this.newWith().topOccurrences(0).size());
         Assert.assertEquals(0, this.newWith("one").topOccurrences(0).size());
-        Verify.assertThrows(IllegalArgumentException.class, () -> this.newWith().topOccurrences(-1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> this.newWith().topOccurrences(-1));
     }
 
     @Test
@@ -1409,7 +1444,7 @@ public abstract class AbstractImmutableSortedBagTestCase extends AbstractImmutab
         Assert.assertEquals(3, this.newWith("one", "one", "two", "two", "three", "three").bottomOccurrences(1).size());
         Assert.assertEquals(0, this.newWith().bottomOccurrences(0).size());
         Assert.assertEquals(0, this.newWith("one").bottomOccurrences(0).size());
-        Verify.assertThrows(IllegalArgumentException.class, () -> this.newWith().bottomOccurrences(-1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> this.newWith().bottomOccurrences(-1));
     }
 
     @Test

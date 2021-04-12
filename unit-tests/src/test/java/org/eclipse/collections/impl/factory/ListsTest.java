@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -11,6 +11,7 @@
 package org.eclipse.collections.impl.factory;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -263,7 +264,7 @@ public class ListsTest
         MutableList<String> list6 = Lists.mutable.ofInitialCapacity(65);
         this.assertPresizedListEquals(65, (FastList<String>) list6);
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> Lists.mutable.ofInitialCapacity(-12));
+        Assert.assertThrows(IllegalArgumentException.class, () -> Lists.mutable.ofInitialCapacity(-12));
     }
 
     @Test
@@ -284,7 +285,7 @@ public class ListsTest
         MutableList<String> list5 = Lists.mutable.withInitialCapacity(32);
         this.assertPresizedListEquals(32, (FastList<String>) list5);
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> Lists.mutable.withInitialCapacity(-6));
+        Assert.assertThrows(IllegalArgumentException.class, () -> Lists.mutable.withInitialCapacity(-6));
     }
 
     private void assertPresizedListEquals(int initialCapacity, FastList<String> list)
@@ -331,7 +332,7 @@ public class ListsTest
         MutableList<String> list6 = Lists.multiReader.ofInitialCapacity(65);
         ListsTest.assertPresizedMultiReaderListEquals(65, (MultiReaderFastList<String>) list6);
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> Lists.multiReader.ofInitialCapacity(-12));
+        Assert.assertThrows(IllegalArgumentException.class, () -> Lists.multiReader.ofInitialCapacity(-12));
     }
 
     @Test
@@ -352,7 +353,7 @@ public class ListsTest
         MutableList<String> list5 = Lists.multiReader.withInitialCapacity(32);
         ListsTest.assertPresizedMultiReaderListEquals(32, (MultiReaderFastList<String>) list5);
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> Lists.multiReader.withInitialCapacity(-6));
+        Assert.assertThrows(IllegalArgumentException.class, () -> Lists.multiReader.withInitialCapacity(-6));
     }
 
     @Test
@@ -449,6 +450,16 @@ public class ListsTest
             List<Integer> list = Interval.fromTo(0, i);
             Assert.assertEquals(list, Lists.immutable.ofAll(list));
         }
+    }
+
+    @Test
+    public void withAllEmptyImmutableSame()
+    {
+        ImmutableList<Integer> empty = Lists.immutable.withAll(Collections.emptyList());
+        ImmutableList<Integer> integers = Lists.immutable.<Integer>empty().newWithAll(Lists.immutable.empty());
+        ImmutableList<Integer> empty2 = Lists.immutable.withAll(integers);
+        Assert.assertSame(Lists.immutable.empty(), empty);
+        Assert.assertSame(Lists.immutable.empty(), empty2);
     }
 
     @Test

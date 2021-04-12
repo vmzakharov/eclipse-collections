@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -196,7 +196,7 @@ public abstract class AbstractMutableBagMultimapTestCase extends AbstractMutable
     {
         MutableBagMultimap<String, String> multimap = this.newMultimap();
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> multimap.putOccurrences("1", "a", -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> multimap.putOccurrences("1", "a", -1));
 
         multimap.putOccurrences("1", "a", 0);
         Verify.assertEmpty(multimap);
@@ -213,7 +213,7 @@ public abstract class AbstractMutableBagMultimapTestCase extends AbstractMutable
         Verify.assertSize(3, multimap);
         Verify.assertBagsEqual(HashBag.newBagWith("b", "b", "b"), multimap.get("2"));
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> multimap.putOccurrences("2", "b", -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> multimap.putOccurrences("2", "b", -1));
 
         multimap.putOccurrences("2", "c", 2);
         Verify.assertSize(5, multimap);

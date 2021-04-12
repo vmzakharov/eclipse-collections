@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -17,7 +17,6 @@ import java.util.Objects;
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.block.function.Function;
-import org.eclipse.collections.api.block.function.Function0;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.function.primitive.BooleanFunction;
 import org.eclipse.collections.api.block.function.primitive.ByteFunction;
@@ -30,13 +29,11 @@ import org.eclipse.collections.api.block.function.primitive.ShortFunction;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.procedure.Procedure;
-import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.ListIterable;
 import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectDoubleMap;
 import org.eclipse.collections.api.map.primitive.ImmutableObjectLongMap;
 import org.eclipse.collections.api.map.primitive.ObjectDoubleMap;
@@ -45,7 +42,6 @@ import org.eclipse.collections.api.multimap.list.ImmutableListMultimap;
 import org.eclipse.collections.api.ordered.OrderedIterable;
 import org.eclipse.collections.api.partition.stack.PartitionImmutableStack;
 import org.eclipse.collections.api.stack.ImmutableStack;
-import org.eclipse.collections.api.stack.MutableStack;
 import org.eclipse.collections.api.stack.StackIterable;
 import org.eclipse.collections.api.stack.primitive.ImmutableBooleanStack;
 import org.eclipse.collections.api.stack.primitive.ImmutableByteStack;
@@ -59,8 +55,6 @@ import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.AbstractRichIterable;
 import org.eclipse.collections.impl.block.factory.Comparators;
 import org.eclipse.collections.impl.block.factory.Predicates;
-import org.eclipse.collections.impl.block.procedure.MutatingAggregationProcedure;
-import org.eclipse.collections.impl.block.procedure.NonMutatingAggregationProcedure;
 import org.eclipse.collections.impl.factory.Bags;
 import org.eclipse.collections.impl.factory.Multimaps;
 import org.eclipse.collections.impl.factory.Stacks;
@@ -75,7 +69,6 @@ import org.eclipse.collections.impl.factory.primitive.ShortStacks;
 import org.eclipse.collections.impl.partition.stack.PartitionArrayStack;
 import org.eclipse.collections.impl.partition.stack.PartitionArrayStack.PartitionPredicate2Procedure;
 import org.eclipse.collections.impl.partition.stack.PartitionArrayStack.PartitionProcedure;
-import org.eclipse.collections.impl.stack.mutable.ArrayStack;
 
 final class ImmutableNotEmptyStack<T>
         extends AbstractRichIterable<T>
@@ -188,12 +181,6 @@ final class ImmutableNotEmptyStack<T>
     public T getLast()
     {
         throw new UnsupportedOperationException("Cannot call getLast() on " + this.getClass().getSimpleName());
-    }
-
-    @Override
-    public MutableStack<T> toStack()
-    {
-        return ArrayStack.newStackFromTopToBottom(this);
     }
 
     @Override
@@ -382,22 +369,6 @@ final class ImmutableNotEmptyStack<T>
     public RichIterable<RichIterable<T>> chunk(int size)
     {
         return this.asLazy().chunk(size);
-    }
-
-    @Override
-    public <K, V> ImmutableMap<K, V> aggregateInPlaceBy(Function<? super T, ? extends K> groupBy, Function0<? extends V> zeroValueFactory, Procedure2<? super V, ? super T> mutatingAggregator)
-    {
-        MutableMap<K, V> map = Maps.mutable.empty();
-        this.forEach(new MutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, mutatingAggregator));
-        return map.toImmutable();
-    }
-
-    @Override
-    public <K, V> ImmutableMap<K, V> aggregateBy(Function<? super T, ? extends K> groupBy, Function0<? extends V> zeroValueFactory, Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
-    {
-        MutableMap<K, V> map = Maps.mutable.empty();
-        this.forEach(new NonMutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, nonMutatingAggregator));
-        return map.toImmutable();
     }
 
     @Override

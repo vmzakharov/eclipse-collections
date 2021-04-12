@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -16,8 +16,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -67,11 +75,8 @@ import org.eclipse.collections.api.tuple.Twin;
 import org.eclipse.collections.impl.UnmodifiableIteratorAdapter;
 import org.eclipse.collections.impl.block.factory.Comparators;
 import org.eclipse.collections.impl.block.factory.PrimitiveFunctions;
-import org.eclipse.collections.impl.block.procedure.MutatingAggregationProcedure;
-import org.eclipse.collections.impl.block.procedure.NonMutatingAggregationProcedure;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.utility.LazyIterate;
 
 public class AbstractUnmodifiableMutableCollection<T> implements MutableCollection<T>
@@ -390,6 +395,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super T, ? extends BooleanIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectBoolean(function, target);
+    }
+
+    @Override
     public MutableByteCollection collectByte(ByteFunction<? super T> byteFunction)
     {
         return this.getMutableCollection().collectByte(byteFunction);
@@ -399,6 +411,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super T> byteFunction, R target)
     {
         return this.getMutableCollection().collectByte(byteFunction, target);
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super T, ? extends ByteIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectByte(function, target);
     }
 
     @Override
@@ -414,6 +433,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super T, ? extends CharIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectChar(function, target);
+    }
+
+    @Override
     public MutableDoubleCollection collectDouble(DoubleFunction<? super T> doubleFunction)
     {
         return this.getMutableCollection().collectDouble(doubleFunction);
@@ -423,6 +449,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super T> doubleFunction, R target)
     {
         return this.getMutableCollection().collectDouble(doubleFunction, target);
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super T, ? extends DoubleIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectDouble(function, target);
     }
 
     @Override
@@ -438,6 +471,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super T, ? extends FloatIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectFloat(function, target);
+    }
+
+    @Override
     public MutableIntCollection collectInt(IntFunction<? super T> intFunction)
     {
         return this.getMutableCollection().collectInt(intFunction);
@@ -447,6 +487,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super T> intFunction, R target)
     {
         return this.getMutableCollection().collectInt(intFunction, target);
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super T, ? extends IntIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectInt(function, target);
     }
 
     @Override
@@ -462,6 +509,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super T, ? extends LongIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectLong(function, target);
+    }
+
+    @Override
     public MutableShortCollection collectShort(ShortFunction<? super T> shortFunction)
     {
         return this.getMutableCollection().collectShort(shortFunction);
@@ -471,6 +525,13 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
     {
         return this.getMutableCollection().collectShort(shortFunction, target);
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super T, ? extends ShortIterable> function, R target)
+    {
+        return this.getMutableCollection().flatCollectShort(function, target);
     }
 
     @Override
@@ -1000,27 +1061,5 @@ public class AbstractUnmodifiableMutableCollection<T> implements MutableCollecti
     public MutableCollection<T> withoutAll(Iterable<? extends T> elements)
     {
         throw new UnsupportedOperationException("Cannot call withoutAll() on " + this.getClass().getSimpleName());
-    }
-
-    @Override
-    public <K, V> MutableMap<K, V> aggregateInPlaceBy(
-            Function<? super T, ? extends K> groupBy,
-            Function0<? extends V> zeroValueFactory,
-            Procedure2<? super V, ? super T> mutatingAggregator)
-    {
-        MutableMap<K, V> map = UnifiedMap.newMap();
-        this.forEach(new MutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, mutatingAggregator));
-        return map;
-    }
-
-    @Override
-    public <K, V> MutableMap<K, V> aggregateBy(
-            Function<? super T, ? extends K> groupBy,
-            Function0<? extends V> zeroValueFactory,
-            Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
-    {
-        MutableMap<K, V> map = UnifiedMap.newMap();
-        this.forEach(new NonMutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, nonMutatingAggregator));
-        return map;
     }
 }

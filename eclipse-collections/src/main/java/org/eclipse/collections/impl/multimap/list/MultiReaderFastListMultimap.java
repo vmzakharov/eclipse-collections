@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -12,6 +12,7 @@ package org.eclipse.collections.impl.multimap.list;
 
 import java.io.Externalizable;
 
+import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
@@ -130,13 +131,13 @@ public final class MultiReaderFastListMultimap<K, V>
     }
 
     @Override
-    public FastListMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public FastListMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.selectKeysMultiValues(predicate, FastListMultimap.newMultimap());
     }
 
     @Override
-    public FastListMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public FastListMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.rejectKeysMultiValues(predicate, FastListMultimap.newMultimap());
     }

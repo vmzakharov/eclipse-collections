@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -334,9 +334,9 @@ public class ListIterateTest
         Assert.assertEquals(integers, results);
         MutableList<Integer> reverseResults = Lists.mutable.of();
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, 4, -1, reverseResults::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, -1, 4, reverseResults::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, 0, 5, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, 4, -1, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, -1, 4, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEach(integers, 0, 5, reverseResults::add));
     }
 
     private void assertReverseForEachUsingFromTo(List<Integer> integers, MutableList<Integer> reverseResults, Procedure<Integer> procedure)
@@ -363,8 +363,8 @@ public class ListIterateTest
         Assert.assertEquals(integers, results);
         MutableList<Integer> reverseResults = Lists.mutable.of();
         ObjectIntProcedure<Integer> objectIntProcedure = ObjectIntProcedures.fromProcedure(CollectionAddProcedure.on(reverseResults));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEachWithIndex(integers, 4, -1, objectIntProcedure));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEachWithIndex(integers, -1, 4, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEachWithIndex(integers, 4, -1, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ListIterate.forEachWithIndex(integers, -1, 4, objectIntProcedure));
     }
 
     private void assertReverseForEachIndexUsingFromTo(List<Integer> integers, MutableList<Integer> reverseResults, ObjectIntProcedure<Integer> objectIntProcedure)
@@ -403,7 +403,8 @@ public class ListIterateTest
     private void assertReverseForEachWithIndex(List<Integer> list)
     {
         Counter counter = new Counter();
-        ListIterate.reverseForEachWithIndex(list, (object, index) -> {
+        ListIterate.reverseForEachWithIndex(list, (object, index) ->
+        {
             Assert.assertEquals(counter.getCount() + 1, object.longValue());
             Assert.assertEquals(4 - counter.getCount(), index);
             counter.increment();
@@ -619,8 +620,8 @@ public class ListIterateTest
         Verify.assertSize(0, ListIterate.take(new LinkedList<>(), 2));
         Verify.assertSize(0, ListIterate.take(new LinkedList<>(), Integer.MAX_VALUE));
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> ListIterate.take(this.getIntegerList(), -1));
-        Verify.assertThrows(IllegalArgumentException.class, () -> ListIterate.take(this.getIntegerList(), -1, FastList.newList()));
+        Assert.assertThrows(IllegalArgumentException.class, () -> ListIterate.take(this.getIntegerList(), -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> ListIterate.take(this.getIntegerList(), -1, FastList.newList()));
     }
 
     private void assertTake(List<Integer> integers)
@@ -656,8 +657,8 @@ public class ListIterateTest
         Verify.assertSize(0, ListIterate.drop(new LinkedList<>(), 2));
         Verify.assertSize(0, ListIterate.drop(new LinkedList<>(), Integer.MAX_VALUE));
 
-        Verify.assertThrows(IllegalArgumentException.class, () -> ListIterate.drop(FastList.newList(), -1));
-        Verify.assertThrows(IllegalArgumentException.class, () -> ListIterate.drop(FastList.newList(), -1, FastList.newList()));
+        Assert.assertThrows(IllegalArgumentException.class, () -> ListIterate.drop(FastList.newList(), -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> ListIterate.drop(FastList.newList(), -1, FastList.newList()));
     }
 
     private void assertDrop(List<Integer> integers)

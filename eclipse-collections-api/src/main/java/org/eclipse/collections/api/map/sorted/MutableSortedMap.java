@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -38,6 +38,7 @@ import org.eclipse.collections.api.list.primitive.MutableFloatList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
 import org.eclipse.collections.api.list.primitive.MutableShortList;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.MutableMapIterable;
 import org.eclipse.collections.api.multimap.list.MutableListMultimap;
@@ -253,6 +254,13 @@ public interface MutableSortedMap<K, V>
     default MutableSortedMap<K, V> withMap(Map<? extends K, ? extends V> map)
     {
         this.putAll(map);
+        return this;
+    }
+
+    @Override
+    default MutableSortedMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        this.putAllMapIterable(mapIterable);
         return this;
     }
 

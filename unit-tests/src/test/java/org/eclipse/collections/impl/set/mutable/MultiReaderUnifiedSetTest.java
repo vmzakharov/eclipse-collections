@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.collections.api.LazyIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.bag.sorted.ImmutableSortedBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.block.function.Function0;
@@ -96,7 +97,7 @@ public class MultiReaderUnifiedSetTest extends MultiReaderMutableCollectionTestC
     @Test
     public void iterator()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> MultiReaderUnifiedSet.newSet().iterator());
+        Assert.assertThrows(UnsupportedOperationException.class, () -> MultiReaderUnifiedSet.newSet().iterator());
     }
 
     @Test
@@ -336,7 +337,8 @@ public class MultiReaderUnifiedSetTest extends MultiReaderMutableCollectionTestC
     {
         MultiReaderUnifiedSet<Integer> set = MultiReaderUnifiedSet.newSetWith(1);
         Object[] result = new Object[1];
-        set.withReadLockAndDelegate(delegate -> {
+        set.withReadLockAndDelegate(delegate ->
+        {
             result[0] = delegate.getFirst();
             this.verifyDelegateIsUnmodifiable(delegate);
         });
@@ -349,7 +351,8 @@ public class MultiReaderUnifiedSetTest extends MultiReaderMutableCollectionTestC
         MultiReaderUnifiedSet<Integer> set = MultiReaderUnifiedSet.newSetWith(2);
         AtomicReference<MutableSet<?>> delegateList = new AtomicReference<>();
         AtomicReference<Iterator<?>> iterator = new AtomicReference<>();
-        set.withWriteLockAndDelegate(delegate -> {
+        set.withWriteLockAndDelegate(delegate ->
+        {
             delegate.add(1);
             delegate.add(2);
             delegate.add(3);
@@ -359,15 +362,15 @@ public class MultiReaderUnifiedSetTest extends MultiReaderMutableCollectionTestC
         });
         Assert.assertEquals(UnifiedSet.newSetWith(1, 2, 3, 4), set);
 
-        Verify.assertThrows(NullPointerException.class, () -> iterator.get().hasNext());
+        Assert.assertThrows(NullPointerException.class, () -> iterator.get().hasNext());
 
-        Verify.assertThrows(NullPointerException.class, () -> delegateList.get().iterator());
+        Assert.assertThrows(NullPointerException.class, () -> delegateList.get().iterator());
     }
 
     private void verifyDelegateIsUnmodifiable(MutableSet<Integer> delegate)
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> delegate.add(2));
-        Verify.assertThrows(UnsupportedOperationException.class, () -> delegate.remove(0));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> delegate.add(2));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> delegate.remove(0));
     }
 
     @Override
@@ -385,6 +388,15 @@ public class MultiReaderUnifiedSetTest extends MultiReaderMutableCollectionTestC
     {
         RichIterable<Integer> integers = this.newWith(2, 4, 1, 3);
         MutableSortedBag<Integer> bag = integers.toSortedBag(Collections.reverseOrder());
+        Verify.assertSortedBagsEqual(TreeBag.newBagWith(Collections.reverseOrder(), 4, 3, 2, 1), bag);
+    }
+
+    @Override
+    @Test
+    public void toImmutableSortedBag_with_comparator()
+    {
+        RichIterable<Integer> integers = this.newWith(2, 4, 1, 3);
+        ImmutableSortedBag<Integer> bag = integers.toImmutableSortedBag(Collections.reverseOrder());
         Verify.assertSortedBagsEqual(TreeBag.newBagWith(Collections.reverseOrder(), 4, 3, 2, 1), bag);
     }
 

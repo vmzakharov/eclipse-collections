@@ -23,6 +23,8 @@ Please add a description of your changes to the [draft release notes](RELEASE_NO
 
 Finally, submit a pull request.
 
+Details on [working with GitHub for Eclipse Collections](https://github.com/eclipse/eclipse-collections/wiki/Working-with-GitHub) is located at the Wiki.
+
 Contact us
 ----------
 
@@ -38,7 +40,7 @@ The Eclipse Collections build requires below as dependencies.
 The Eclipse Collections build performs code generation to create primitive collections. Run the full build once before opening your IDE.
 
 ```bash
-$ ./mvnw -DskipTests=true
+$ mvn install -DskipTests=true
 ```
 
 Now you can open the project in your IDE and it won't complain about missing files. You'll be able to use the IDE to perform incremental builds and run tests. You should rarely need to run the maven build, except when:
@@ -46,7 +48,7 @@ Now you can open the project in your IDE and it won't complain about missing fil
 - you want to force a clean build
 - you work on [JMH][jmh] tests
 - your changes affect code generation
-- you want to see if your changes will pass [the same builds that Travis CI runs][travis]
+- you want to see if your changes will pass [the same builds that GitHub Actions runs][github]
 
 Semantic Versioning
 -------------------
@@ -67,7 +69,7 @@ Coding Style
 Eclipse Collections follows a coding style that is similar to [Google's Style Guide for Java][style-guide], but with curly braces on their own lines. Many aspects of the style guide are enforced by CheckStyle, but not all, so please take care.
 
 ```bash
-$ ./mvnw
+$ mvn clean install checkstyle:check findbugs:check --projects "!scala-unit-tests,!jmh-scala-tests,!jmh-tests" -DskipTests=true
 ```
 
 Avoid changing whitespace on lines that are unrelated to your pull request. This helps preserve the accuracy of the git blame view, and makes code reviews easier.
@@ -91,7 +93,7 @@ Excessive branching and merging can make git history confusing. With that in min
 Submit your pull request when ready. Three checks will be kicked off automatically.
 
 - IP Validation: Checks that all committers signed the Eclipse CLA and signed their commits.
-- Continuous integration: [Travis builds][travis] that run JUnit tests, CheckStyle, and FindBugs.
+- Continuous integration: [GitHub Actions][github] that run JUnit tests, CheckStyle, and FindBugs.
 - The standard GitHub check that the pull request has no conflicts with the base branch.
 
 Make sure all the checks pass. One of the committers will take a look and provide feedback or merge your contribution.
@@ -103,7 +105,7 @@ That's it! Thanks for contributing to Eclipse Collections!
 [semver]:          http://semver.org/
 [style-guide]:     https://google.github.io/styleguide/javaguide.html
 [rebase]:          https://github.com/edx/edx-platform/wiki/How-to-Rebase-a-Pull-Request
-[travis]:          https://travis-ci.org/eclipse/eclipse-collections
+[github]:          https://github.com/eclipse/eclipse-collections/actions
 [imperative-mood]: https://github.com/git/git/blob/master/Documentation/SubmittingPatches
 [github-issue]:    https://help.github.com/articles/closing-issues-via-commit-messages/
 [mailing-list]:    https://dev.eclipse.org/mailman/listinfo/collections-dev

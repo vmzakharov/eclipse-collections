@@ -36,7 +36,8 @@ public interface Mutable<name>SetFactory
      * Same as {@link #empty()}.
      */
     Mutable<name>Set with();
-
+    <(capacityMethods.(type))()>
+    
     /**
      * Same as {@link #with(<type>[])}.
      */
@@ -52,7 +53,7 @@ public interface Mutable<name>SetFactory
     Mutable<name>Set withAll(<name>Iterable items);
 
     /**
-     * Same as {@link #withAll(Iterable<wrapperName>)}.
+     * Same as {@link #withAll(Iterable)}.
      */
     Mutable<name>Set ofAll(Iterable\<<wrapperName>\> iterable);
 
@@ -60,6 +61,30 @@ public interface Mutable<name>SetFactory
     <(streamMethods.(type))()>
 }
 
+>>
+
+capacityMethods ::= [
+    "byte": "noMethods",
+    "short": "capacityMethods",
+    "char": "capacityMethods",
+    "int": "capacityMethods",
+    "long": "capacityMethods",
+    "float": "capacityMethods",
+    "double": "capacityMethods",
+    "boolean": "noMethods"
+    ]
+
+capacityMethods() ::= <<
+
+
+/**
+ * Same as {@link #empty()}. but takes in an initial capacity
+ * @since 10.3
+ */
+default Mutable<name>Set withInitialCapacity(int capacity)
+{
+    throw new UnsupportedOperationException("Default method to ensure backwards compatibility");
+}
 >>
 
 streamMethods ::= [

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -10,6 +10,7 @@
 
 package org.eclipse.collections.api.map.sorted;
 
+import java.util.Map;
 import java.util.SortedMap;
 
 import org.eclipse.collections.api.block.function.Function;
@@ -40,6 +41,7 @@ import org.eclipse.collections.api.list.primitive.ImmutableLongList;
 import org.eclipse.collections.api.list.primitive.ImmutableShortList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.ImmutableMapIterable;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.list.ImmutableListMultimap;
 import org.eclipse.collections.api.multimap.sortedset.ImmutableSortedSetMultimap;
@@ -64,6 +66,12 @@ public interface ImmutableSortedMap<K, V>
 
     @Override
     ImmutableSortedMap<K, V> newWithKeyValue(K key, V value);
+
+    @Override
+    ImmutableSortedMap<K, V> newWithMap(Map<? extends K, ? extends V> map);
+
+    @Override
+    ImmutableSortedMap<K, V> newWithMapIterable(MapIterable<? extends K, ? extends V> mapIterable);
 
     @Override
     ImmutableSortedMap<K, V> newWithAllKeyValues(Iterable<? extends Pair<? extends K, ? extends V>> keyValues);
@@ -216,11 +224,24 @@ public interface ImmutableSortedMap<K, V>
             Function0<? extends VV> zeroValueFactory,
             Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
     {
-        MutableMap<KK, VV> map = Maps.mutable.empty();
-        this.forEach(each ->
-        {
-            KK key = groupBy.valueOf(each);
-            map.updateValueWith(key, zeroValueFactory, nonMutatingAggregator, each);
+        MutableMap<KK, VV> map = this.aggregateBy(
+                groupBy,
+                zeroValueFactory,
+                nonMutatingAggregator,
+                Maps.mutable.empty());
+        return map.toImmutable();
+    }
+
+    @Override
+    default <K1, V1, V2> ImmutableMap<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        MutableMap<K1, V2> map = Maps.mutable.empty();
+        this.forEachKeyValue((key, value) -> {
+            map.updateValueWith(keyFunction.valueOf(key), zeroValueFactory, nonMutatingAggregator, valueFunction.valueOf(value));
         });
         return map.toImmutable();
     }

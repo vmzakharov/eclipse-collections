@@ -1,27 +1,31 @@
-10.2.0
+11.0.0
 ====================
 
-This is the 10.2.0 minor release.
-This release is to provide new features requested by the community, bug fix for edge case issues, and reduce tech debt.
+This is the 11.0.0 major release. 
+
+The Eclipse Collections team gives a huge thank you to everyone who participated in this release.
 
 # New Functionality
 -----------------
-* Exposed the `allocateTable` method as `protected` in Primitive Maps and Primitive Sets.
-
-# Bug Fixes
------------------
-* Fixed size edge case issues in Interval and IntInterval.
+* 
 
 # Tech Debt Reduction
 ---------------------
-* Optimized `removeIf` on UnifiedMap.
-* Implemented `removeIf` as a `default` method on MutableMapIterable.
-* Replaced usages of `Comparators.nullSafeEquals()` with `Objects.equals()`.
+* 
+
+# OSGi Integration Improvements
+-------------------------------
+* 
 
 # Build Changes
 -----------------
-* Moved some maven configuration from .travis.yml to jvm.config.
-* Changed Maven plugin repository to use https.
+* 
+
+# Note
+-------
+_We have taken all the measures to ensure all features are captured in the release notes. 
+However, release notes compilation is manual, so it is possible that a commit might be missed. 
+For a comprehensive list of commits please go through the commit log._
 
 Acquiring Eclipse Collections
 -----------------------------
@@ -32,47 +36,47 @@ Acquiring Eclipse Collections
 <dependency>
   <groupId>org.eclipse.collections</groupId>
   <artifactId>eclipse-collections-api</artifactId>
-  <version>10.2.0</version>
+  <version>11.0.0</version>
 </dependency>
 
 <dependency>
   <groupId>org.eclipse.collections</groupId>
   <artifactId>eclipse-collections</artifactId>
-  <version>10.2.0</version>
+  <version>11.0.0</version>
 </dependency>
 
 <dependency>
   <groupId>org.eclipse.collections</groupId>
   <artifactId>eclipse-collections-testutils</artifactId>
-  <version>10.2.0</version>
+  <version>11.0.0</version>
   <scope>test</scope>
 </dependency>
 
 <dependency>
   <groupId>org.eclipse.collections</groupId>
   <artifactId>eclipse-collections-forkjoin</artifactId>
-  <version>10.2.0</version>
+  <version>11.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'org.eclipse.collections:eclipse-collections-api:10.2.0'
-compile 'org.eclipse.collections:eclipse-collections:10.2.0'
-testCompile 'org.eclipse.collections:eclipse-collections-testutils:10.2.0'
-compile 'org.eclipse.collections:eclipse-collections-forkjoin:10.2.0'
+implementation 'org.eclipse.collections:eclipse-collections-api:11.0.0'
+implementation 'org.eclipse.collections:eclipse-collections:11.0.0'
+testImplementation 'org.eclipse.collections:eclipse-collections-testutils:11.0.0'
+implementation 'org.eclipse.collections:eclipse-collections-forkjoin:11.0.0'
 ```
 
 ### Ivy
 
 ```xml
-<dependency org="org.eclipse.collections" name="eclipse-collections-api" rev="10.2.0" />
-<dependency org="org.eclipse.collections" name="eclipse-collections" rev="10.2.0" />
-<dependency org="org.eclipse.collections" name="eclipse-collections-testutils" rev="10.2.0" />
-<dependency org="org.eclipse.collections" name="eclipse-collections-forkjoin" rev="10.2.0"/>
+<dependency org="org.eclipse.collections" name="eclipse-collections-api" rev="11.0.0" />
+<dependency org="org.eclipse.collections" name="eclipse-collections" rev="11.0.0" />
+<dependency org="org.eclipse.collections" name="eclipse-collections-testutils" rev="11.0.0" />
+<dependency org="org.eclipse.collections" name="eclipse-collections-forkjoin" rev="11.0.0"/>
 ```
 
 ### OSGi Bundle
 
-Eclipse software repository location: http://download.eclipse.org/collections/10.2.0/repository
+Eclipse software repository location: http://download.eclipse.org/collections/11.0.0/repository

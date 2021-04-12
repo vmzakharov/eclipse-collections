@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Bhavana Hindupur.
+ * Copyright (c) 2021 Bhavana Hindupur.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -57,11 +57,11 @@ public class HashBagWithHashingStrategyTest extends MutableBagTestCase
     @Test
     public void newBag_throws()
     {
-        Verify.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null));
-        Verify.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, 1));
-        Verify.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, Bags.mutable.empty()));
-        Verify.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, Lists.mutable.empty()));
-        Verify.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(HashingStrategies.defaultStrategy(), -1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null));
+        Assert.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, 1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, Bags.mutable.empty()));
+        Assert.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(null, Lists.mutable.empty()));
+        Assert.assertThrows(IllegalArgumentException.class, () -> HashBagWithHashingStrategy.newBag(HashingStrategies.defaultStrategy(), -1));
     }
 
     @Override

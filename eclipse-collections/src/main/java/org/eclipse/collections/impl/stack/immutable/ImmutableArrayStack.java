@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -23,8 +23,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -73,7 +81,6 @@ import org.eclipse.collections.api.partition.stack.PartitionImmutableStack;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.stack.ImmutableStack;
-import org.eclipse.collections.api.stack.MutableStack;
 import org.eclipse.collections.api.stack.StackIterable;
 import org.eclipse.collections.api.stack.primitive.ImmutableBooleanStack;
 import org.eclipse.collections.api.stack.primitive.ImmutableByteStack;
@@ -85,15 +92,12 @@ import org.eclipse.collections.api.stack.primitive.ImmutableLongStack;
 import org.eclipse.collections.api.stack.primitive.ImmutableShortStack;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.block.factory.Predicates;
-import org.eclipse.collections.impl.block.procedure.MutatingAggregationProcedure;
-import org.eclipse.collections.impl.block.procedure.NonMutatingAggregationProcedure;
 import org.eclipse.collections.impl.block.procedure.checked.CheckedProcedure;
 import org.eclipse.collections.impl.list.Interval;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.multimap.list.FastListMultimap;
 import org.eclipse.collections.impl.partition.stack.PartitionArrayStack;
-import org.eclipse.collections.impl.stack.mutable.ArrayStack;
 import org.eclipse.collections.impl.stack.mutable.primitive.BooleanArrayStack;
 import org.eclipse.collections.impl.stack.mutable.primitive.ByteArrayStack;
 import org.eclipse.collections.impl.stack.mutable.primitive.CharArrayStack;
@@ -107,7 +111,11 @@ import org.eclipse.collections.impl.utility.LazyIterate;
 
 /**
  * The immutable equivalent of ArrayStack. Wraps a FastList.
+ *
+ * @deprecated Replaced by {@link ImmutableNotEmptyStack}.
+ * Use {@link org.eclipse.collections.api.factory.Stacks#immutable}.{@link ImmutableStackFactoryImpl#with(Object[]) with()}
  */
+@Deprecated
 final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -293,12 +301,6 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     }
 
     @Override
-    public MutableStack<T> toStack()
-    {
-        return ArrayStack.newStackFromTopToBottom(this);
-    }
-
-    @Override
     public ImmutableStack<T> select(Predicate<? super T> predicate)
     {
         return ImmutableArrayStack.newStackFromTopToBottom(this.delegate.asReversed().select(predicate).toList());
@@ -387,6 +389,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super T, ? extends BooleanIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectBoolean(function, target);
+    }
+
+    @Override
     public ImmutableByteStack collectByte(ByteFunction<? super T> byteFunction)
     {
         return ByteArrayStack.newStackFromTopToBottom(this.delegate.asReversed().collectByte(byteFunction)).toImmutable();
@@ -396,6 +405,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super T> byteFunction, R target)
     {
         return this.delegate.asReversed().collectByte(byteFunction, target);
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super T, ? extends ByteIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectByte(function, target);
     }
 
     @Override
@@ -411,6 +427,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super T, ? extends CharIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectChar(function, target);
+    }
+
+    @Override
     public ImmutableDoubleStack collectDouble(DoubleFunction<? super T> doubleFunction)
     {
         return DoubleArrayStack.newStackFromTopToBottom(this.delegate.asReversed().collectDouble(doubleFunction)).toImmutable();
@@ -420,6 +443,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super T> doubleFunction, R target)
     {
         return this.delegate.asReversed().collectDouble(doubleFunction, target);
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super T, ? extends DoubleIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectDouble(function, target);
     }
 
     @Override
@@ -435,6 +465,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super T, ? extends FloatIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectFloat(function, target);
+    }
+
+    @Override
     public ImmutableIntStack collectInt(IntFunction<? super T> intFunction)
     {
         return IntArrayStack.newStackFromTopToBottom(this.delegate.asReversed().collectInt(intFunction)).toImmutable();
@@ -444,6 +481,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super T> intFunction, R target)
     {
         return this.delegate.asReversed().collectInt(intFunction, target);
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super T, ? extends IntIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectInt(function, target);
     }
 
     @Override
@@ -459,6 +503,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super T, ? extends LongIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectLong(function, target);
+    }
+
+    @Override
     public ImmutableShortStack collectShort(ShortFunction<? super T> shortFunction)
     {
         return ShortArrayStack.newStackFromTopToBottom(this.delegate.asReversed().collectShort(shortFunction)).toImmutable();
@@ -468,6 +519,13 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
     {
         return this.delegate.asReversed().collectShort(shortFunction, target);
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super T, ? extends ShortIterable> function, R target)
+    {
+        return this.delegate.asReversed().flatCollectShort(function, target);
     }
 
     @Override
@@ -955,22 +1013,6 @@ final class ImmutableArrayStack<T> implements ImmutableStack<T>, Serializable
     public RichIterable<RichIterable<T>> chunk(int size)
     {
         return this.delegate.asReversed().chunk(size);
-    }
-
-    @Override
-    public <K, V> ImmutableMap<K, V> aggregateInPlaceBy(Function<? super T, ? extends K> groupBy, Function0<? extends V> zeroValueFactory, Procedure2<? super V, ? super T> mutatingAggregator)
-    {
-        MutableMap<K, V> map = UnifiedMap.newMap();
-        this.forEach(new MutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, mutatingAggregator));
-        return map.toImmutable();
-    }
-
-    @Override
-    public <K, V> ImmutableMap<K, V> aggregateBy(Function<? super T, ? extends K> groupBy, Function0<? extends V> zeroValueFactory, Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
-    {
-        MutableMap<K, V> map = UnifiedMap.newMap();
-        this.forEach(new NonMutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, nonMutatingAggregator));
-        return map.toImmutable();
     }
 
     @Override

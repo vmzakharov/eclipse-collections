@@ -1,4 +1,4 @@
-import "copyright.stg"
+import "copyrightAndOthers.stg"
 import "primitiveLiteral.stg"
 
 skipBoolean() ::= "true"
@@ -14,7 +14,7 @@ class(primitive) ::= <<
 >>
 
 body(type, wrapperName, name) ::= <<
-<copyright()>
+<copyrightAndOthers()>
 
 package org.eclipse.collections.impl.set.mutable.primitive;
 
@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 import org.eclipse.collections.api.Lazy<name>Iterable;
 import org.eclipse.collections.api.iterator.<name>Iterator;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.primitive.Immutable<name>Set;
 import org.eclipse.collections.api.set.primitive.Mutable<name>Set;
 import org.eclipse.collections.impl.bag.mutable.primitive.<name>HashBag;
@@ -31,6 +32,9 @@ import org.eclipse.collections.impl.collection.immutable.primitive.AbstractImmut
 import org.eclipse.collections.impl.list.mutable.primitive.<name>ArrayList;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.test.Verify;
+import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
+import org.eclipse.collections.api.tuple.primitive.<name><name>Pair;
+import org.eclipse.collections.impl.factory.Sets;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -129,7 +133,7 @@ public abstract class AbstractImmutable<name>HashSetTestCase extends AbstractImm
         actual.add(iterator.next());
         Assert.assertFalse(iterator.hasNext());
         Assert.assertEquals(expected, actual);
-        Verify.assertThrows(NoSuchElementException.class, iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Override
@@ -262,6 +266,274 @@ public abstract class AbstractImmutable<name>HashSetTestCase extends AbstractImm
         Immutable<name>Set set = this.newWith(<["0", "1", "31"]:(literal.(type))(); separator=", ">, AbstractImmutable<name>HashSetTestCase.generateCollisions().getFirst(), AbstractImmutable<name>HashSetTestCase.generateCollisions().get(1));
         Assert.assertEquals(set.toSet(), set.asLazy().toSet());
         Verify.assertInstanceOf(Lazy<name>Iterable.class, set.asLazy());
+    }
+
+    @Test
+    public void union()
+    {
+        this.assertUnion(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3", "4", "5"]:(literal.(type))(); separator=", ">));
+
+        this.assertUnion(
+                this.newWith(<["1", "2", "3", "6"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3", "4", "5", "6"]:(literal.(type))(); separator=", ">));
+
+        this.assertUnion(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5" , "6"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3", "4", "5", "6"]:(literal.(type))(); separator=", ">));
+
+        this.assertUnion(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertUnion(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">));
+
+        this.assertUnion(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">));
+    }
+
+    private void assertUnion(Immutable<name>Set set1, Immutable<name>Set set2, Immutable<name>Set expected)
+    {
+        Immutable<name>Set actual = set1.union(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void intersect()
+    {
+        this.assertIntersect(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3"]:(literal.(type))(); separator=", ">));
+
+        this.assertIntersect(
+                this.newWith(<["1", "2", "3", "6"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3"]:(literal.(type))(); separator=", ">));
+
+        this.assertIntersect(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5" , "6"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3"]:(literal.(type))(); separator=", ">));
+
+        this.assertIntersect(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertIntersect(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith());
+
+        this.assertIntersect(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                this.newWith());
+    }
+
+    private void assertIntersect(Immutable<name>Set set1, Immutable<name>Set set2, Immutable<name>Set expected)
+    {
+        Immutable<name>Set actual = set1.intersect(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void difference()
+    {
+        this.assertDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">));
+
+        this.assertDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith());
+
+        this.assertDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">));
+    }
+
+    private void assertDifference(Immutable<name>Set set1, Immutable<name>Set set2, Immutable<name>Set expected)
+    {
+        Immutable<name>Set actual = set1.difference(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void symmetricDifference()
+    {
+        this.assertSymmetricDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["2", "3", "4"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "4"]:(literal.(type))(); separator=", ">));
+
+        this.assertSymmetricDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith());
+
+        this.assertSymmetricDifference(
+                this.newWith(),
+                this.newWith(),
+                this.newWith());
+
+        this.assertSymmetricDifference(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">));
+
+        this.assertSymmetricDifference(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">));
+    }
+
+    private void assertSymmetricDifference(Immutable<name>Set set1, Immutable<name>Set set2, Immutable<name>Set expected)
+    {
+        Immutable<name>Set actual = set1.symmetricDifference(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void isSubsetOf()
+    {
+        this.assertIsSubsetOf(
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(<["1", "4"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                false);
+
+        this.assertIsSubsetOf(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(),
+                this.newWith(),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                true);
+
+        this.assertIsSubsetOf(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                false);
+    }
+
+    private void assertIsSubsetOf(Immutable<name>Set set1, Immutable<name>Set set2, boolean expected)
+    {
+        boolean actual = set1.isSubsetOf(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void isProperSubsetOf()
+    {
+        this.assertIsProperSubsetOf(
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                true);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(<["1", "4"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(),
+                this.newWith(),
+                false);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(),
+                this.newWith(<["3", "4", "5"]:(literal.(type))(); separator=", ">),
+                true);
+
+        this.assertIsProperSubsetOf(
+                this.newWith(<["1", "2", "3"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                false);
+    }
+
+    private void assertIsProperSubsetOf(Immutable<name>Set set1, Immutable<name>Set set2, boolean expected)
+    {
+        boolean actual = set1.isProperSubsetOf(set2);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void cartesianProduct()
+    {
+        this.assertCartesianProduct(
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["3", "4"]:(literal.(type))(); separator=", ">),
+                Sets.immutable.with(
+                        PrimitiveTuples.pair(<(literal.(type))("1")>, <(literal.(type))("3")>),
+                        PrimitiveTuples.pair(<(literal.(type))("1")>, <(literal.(type))("4")>),
+                        PrimitiveTuples.pair(<(literal.(type))("2")>, <(literal.(type))("3")>),
+                        PrimitiveTuples.pair(<(literal.(type))("2")>, <(literal.(type))("4")>)));
+
+        this.assertCartesianProduct(
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                Sets.immutable.with(
+                        PrimitiveTuples.pair(<(literal.(type))("1")>, <(literal.(type))("1")>),
+                        PrimitiveTuples.pair(<(literal.(type))("1")>, <(literal.(type))("2")>),
+                        PrimitiveTuples.pair(<(literal.(type))("2")>, <(literal.(type))("1")>),
+                        PrimitiveTuples.pair(<(literal.(type))("2")>, <(literal.(type))("2")>)));
+
+        this.assertCartesianProduct(
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                this.newWith(),
+                Sets.immutable.empty());
+
+        this.assertCartesianProduct(
+                this.newWith(),
+                this.newWith(<["1", "2"]:(literal.(type))(); separator=", ">),
+                Sets.immutable.empty());
+    }
+
+    private void assertCartesianProduct(Immutable<name>Set set1, Immutable<name>Set set2, ImmutableSet\<<name><name>Pair> expected)
+    {
+        ImmutableSet\<<name><name>Pair> actual = set1.cartesianProduct(set2).toSet().toImmutable();
+        Assert.assertEquals(expected, actual);
     }
 }
 

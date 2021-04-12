@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -10,14 +10,22 @@
 
 package org.eclipse.collections.api.bimap;
 
+import java.util.Map;
+
 import org.eclipse.collections.api.bag.ImmutableBagIterable;
 import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.api.block.function.Function0;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.factory.BiMaps;
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.ImmutableMapIterable;
+import org.eclipse.collections.api.map.MapIterable;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.set.ImmutableSetMultimap;
 import org.eclipse.collections.api.ordered.OrderedIterable;
 import org.eclipse.collections.api.partition.set.PartitionImmutableSet;
@@ -36,6 +44,12 @@ public interface ImmutableBiMap<K, V> extends BiMap<K, V>, ImmutableMapIterable<
 
     @Override
     ImmutableBiMap<K, V> newWithAllKeyValues(Iterable<? extends Pair<? extends K, ? extends V>> keyValues);
+
+    @Override
+    ImmutableBiMap<K, V> newWithMap(Map<? extends K, ? extends V> map);
+
+    @Override
+    ImmutableBiMap<K, V> newWithMapIterable(MapIterable<? extends K, ? extends V> mapIterable);
 
     @Override
     ImmutableBiMap<K, V> newWithAllKeyValueArguments(Pair<? extends K, ? extends V>... keyValuePairs);
@@ -123,6 +137,61 @@ public interface ImmutableBiMap<K, V> extends BiMap<K, V>, ImmutableMapIterable<
     {
         MutableBiMap<VV, V> target = BiMaps.mutable.empty();
         return this.groupByUniqueKey(function, target).toImmutable();
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    default <KK, VV> ImmutableMap<KK, VV> aggregateInPlaceBy(
+            Function<? super V, ? extends KK> groupBy,
+            Function0<? extends VV> zeroValueFactory,
+            Procedure2<? super VV, ? super V> mutatingAggregator)
+    {
+        MutableMap<KK, VV> map = Maps.mutable.empty();
+        this.forEach(each ->
+        {
+            KK key = groupBy.valueOf(each);
+            VV value = map.getIfAbsentPut(key, zeroValueFactory);
+            mutatingAggregator.value(value, each);
+        });
+        return map.toImmutable();
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    default <KK, VV> ImmutableMap<KK, VV> aggregateBy(
+            Function<? super V, ? extends KK> groupBy,
+            Function0<? extends VV> zeroValueFactory,
+            Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
+    {
+        MutableMap<KK, VV> map = this.aggregateBy(
+                groupBy,
+                zeroValueFactory,
+                nonMutatingAggregator,
+                Maps.mutable.empty());
+        return map.toImmutable();
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    default <K1, V1, V2> ImmutableMap<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        MutableMap<K1, V2> map = Maps.mutable.empty();
+        this.forEachKeyValue((key, value) -> map.updateValueWith(
+                keyFunction.valueOf(key),
+                zeroValueFactory,
+                nonMutatingAggregator,
+                valueFunction.valueOf(value)));
+        return map.toImmutable();
     }
 
     /**

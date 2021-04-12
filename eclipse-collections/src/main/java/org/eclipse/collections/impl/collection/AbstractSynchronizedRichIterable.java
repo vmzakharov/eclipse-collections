@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -27,8 +27,10 @@ import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.Bag;
+import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.MutableBagIterable;
+import org.eclipse.collections.api.bag.sorted.ImmutableSortedBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.block.function.Function;
@@ -59,6 +61,7 @@ import org.eclipse.collections.api.collection.primitive.MutableFloatCollection;
 import org.eclipse.collections.api.collection.primitive.MutableIntCollection;
 import org.eclipse.collections.api.collection.primitive.MutableLongCollection;
 import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
@@ -69,7 +72,9 @@ import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.multimap.Multimap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.api.partition.PartitionIterable;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.block.factory.Comparators;
@@ -379,11 +384,31 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super T, ? extends BooleanIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectBoolean(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super T> byteFunction, R target)
     {
         synchronized (this.lock)
         {
             return this.delegate.collectByte(byteFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super T, ? extends ByteIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectByte(function, target);
         }
     }
 
@@ -397,11 +422,31 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super T, ? extends CharIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectChar(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super T> doubleFunction, R target)
     {
         synchronized (this.lock)
         {
             return this.delegate.collectDouble(doubleFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super T, ? extends DoubleIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectDouble(function, target);
         }
     }
 
@@ -415,11 +460,31 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super T, ? extends FloatIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectFloat(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super T> intFunction, R target)
     {
         synchronized (this.lock)
         {
             return this.delegate.collectInt(intFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super T, ? extends IntIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectInt(function, target);
         }
     }
 
@@ -433,11 +498,31 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super T, ? extends LongIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectLong(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
     {
         synchronized (this.lock)
         {
             return this.delegate.collectShort(shortFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super T, ? extends ShortIterable> function, R target)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.flatCollectShort(function, target);
         }
     }
 
@@ -676,11 +761,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableList<T> toImmutableList()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableList();
+        }
+    }
+
+    @Override
     public MutableList<T> toSortedList()
     {
         synchronized (this.lock)
         {
             return this.delegate.toSortedList();
+        }
+    }
+
+    @Override
+    public ImmutableList<T> toImmutableSortedList()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedList();
         }
     }
 
@@ -694,11 +797,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableList<T> toImmutableSortedList(Comparator<? super T> comparator)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedList(comparator);
+        }
+    }
+
+    @Override
     public <V extends Comparable<? super V>> MutableList<T> toSortedListBy(Function<? super T, ? extends V> function)
     {
         synchronized (this.lock)
         {
-            return this.delegate.toSortedList(Comparators.byFunction(function));
+            return this.delegate.toSortedListBy(function);
+        }
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> ImmutableList<T> toImmutableSortedListBy(Function<? super T, ? extends V> function)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedListBy(function);
         }
     }
 
@@ -712,11 +833,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableSet<T> toImmutableSet()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSet();
+        }
+    }
+
+    @Override
     public MutableSortedSet<T> toSortedSet()
     {
         synchronized (this.lock)
         {
             return this.delegate.toSortedSet();
+        }
+    }
+
+    @Override
+    public ImmutableSortedSet<T> toImmutableSortedSet()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedSet();
         }
     }
 
@@ -730,11 +869,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableSortedSet<T> toImmutableSortedSet(Comparator<? super T> comparator)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedSet(comparator);
+        }
+    }
+
+    @Override
     public <V extends Comparable<? super V>> MutableSortedSet<T> toSortedSetBy(Function<? super T, ? extends V> function)
     {
         synchronized (this.lock)
         {
             return this.delegate.toSortedSetBy(function);
+        }
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> ImmutableSortedSet<T> toImmutableSortedSetBy(Function<? super T, ? extends V> function)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedSetBy(function);
         }
     }
 
@@ -748,11 +905,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableBag<T> toImmutableBag()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableBag();
+        }
+    }
+
+    @Override
     public MutableSortedBag<T> toSortedBag()
     {
         synchronized (this.lock)
         {
             return this.delegate.toSortedBag();
+        }
+    }
+
+    @Override
+    public ImmutableSortedBag<T> toImmutableSortedBag()
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedBag();
         }
     }
 
@@ -766,11 +941,29 @@ public abstract class AbstractSynchronizedRichIterable<T> implements RichIterabl
     }
 
     @Override
+    public ImmutableSortedBag<T> toImmutableSortedBag(Comparator<? super T> comparator)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedBag(comparator);
+        }
+    }
+
+    @Override
     public <V extends Comparable<? super V>> MutableSortedBag<T> toSortedBagBy(Function<? super T, ? extends V> function)
     {
         synchronized (this.lock)
         {
             return this.delegate.toSortedBag(Comparators.byFunction(function));
+        }
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> ImmutableSortedBag<T> toImmutableSortedBagBy(Function<? super T, ? extends V> function)
+    {
+        synchronized (this.lock)
+        {
+            return this.delegate.toImmutableSortedBagBy(function);
         }
     }
 

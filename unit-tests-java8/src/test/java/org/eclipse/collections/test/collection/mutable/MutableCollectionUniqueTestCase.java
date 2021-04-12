@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -15,7 +15,6 @@ import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.impl.block.factory.Predicates;
 import org.eclipse.collections.impl.block.factory.Predicates2;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.test.Verify;
 import org.eclipse.collections.test.IterableTestCase;
 import org.eclipse.collections.test.RichIterableUniqueTestCase;
 import org.junit.Assert;
@@ -43,7 +42,7 @@ public interface MutableCollectionUniqueTestCase extends MutableCollectionTestCa
         Assert.assertFalse(collection3.removeIf(Predicates.equal(5)));
 
         Predicate<Object> predicate = null;
-        Verify.assertThrows(NullPointerException.class, () -> this.newWith(7, 4, 5, 1).removeIf(predicate));
+        Assert.assertThrows(NullPointerException.class, () -> this.newWith(7, 4, 5, 1).removeIf(predicate));
     }
 
     @Override
@@ -62,7 +61,7 @@ public interface MutableCollectionUniqueTestCase extends MutableCollectionTestCa
         MutableCollection<Integer> collection3 = this.newWith();
         Assert.assertFalse(collection3.removeIf(Predicates.equal(5)));
 
-        Verify.assertThrows(NullPointerException.class, () -> this.newWith(7, 4, 5, 1).removeIf(Predicates.cast(null)));
+        Assert.assertThrows(NullPointerException.class, () -> this.newWith(7, 4, 5, 1).removeIf(Predicates.cast(null)));
     }
 
     @Override

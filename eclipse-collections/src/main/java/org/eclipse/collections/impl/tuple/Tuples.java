@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -48,6 +48,14 @@ public final class Tuples
         return new TwinImpl<>(one, two);
     }
 
+    /**
+     * This method returns a {@link Twin} where both elements in the {@link Twin} are the same as the input element.
+     */
+    public static <T> Twin<T> identicalTwin(T each)
+    {
+        return new TwinImpl<>(each, each);
+    }
+
     public static <T1, T2, T3> Triple<T1, T2, T3> triple(T1 one, T2 two, T3 three)
     {
         return new TripleImpl<>(one, two, three);
@@ -56,5 +64,13 @@ public final class Tuples
     public static <T> Triplet<T> triplet(T one, T two, T three)
     {
         return new TripletImpl<>(one, two, three);
+    }
+
+    /**
+     * This method returns a {@link Triplet} where the three elements in the {@link Triplet} are the same as the input element.
+     */
+    public static <T> Triplet<T> identicalTriplet(T each)
+    {
+        return new TripletImpl<>(each, each, each);
     }
 }

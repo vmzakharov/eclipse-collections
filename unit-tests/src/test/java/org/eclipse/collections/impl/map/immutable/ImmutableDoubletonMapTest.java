@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -87,6 +87,18 @@ public class ImmutableDoubletonMapTest extends ImmutableMemoryEfficientMapTestCa
 
     @Override
     @Test
+    public void getOrDefault()
+    {
+        super.getOrDefault();
+
+        ImmutableMap<Integer, String> map = this.classUnderTest();
+        Assert.assertNull(map.get(4));
+        Assert.assertEquals("4", map.getOrDefault(4, "4"));
+        Assert.assertNull(map.get(4));
+    }
+
+    @Override
+    @Test
     public void getIfAbsent()
     {
         super.getIfAbsent();
@@ -133,7 +145,8 @@ public class ImmutableDoubletonMapTest extends ImmutableMemoryEfficientMapTestCa
         super.forEachWithIndex();
         MutableList<String> result = Lists.mutable.of();
         ImmutableMap<Integer, String> map = new ImmutableDoubletonMap<>(1, "One", 2, "Two");
-        map.forEachWithIndex((value, index) -> {
+        map.forEachWithIndex((value, index) ->
+        {
             result.add(value);
             result.add(String.valueOf(index));
         });
@@ -217,7 +230,7 @@ public class ImmutableDoubletonMapTest extends ImmutableMemoryEfficientMapTestCa
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
     }
 
     @Override

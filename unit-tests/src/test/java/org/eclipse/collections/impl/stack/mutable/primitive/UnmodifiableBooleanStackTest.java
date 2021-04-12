@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -93,7 +93,7 @@ public class UnmodifiableBooleanStackTest extends AbstractBooleanStackTestCase
         MutableBooleanIterator booleanIterator = (MutableBooleanIterator) this.classUnderTest().booleanIterator();
         Assert.assertTrue(booleanIterator.hasNext());
         booleanIterator.next();
-        Verify.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
     }
 
     @Test
@@ -101,6 +101,6 @@ public class UnmodifiableBooleanStackTest extends AbstractBooleanStackTestCase
     {
         MutableBooleanIterator booleanIterator = (MutableBooleanIterator) this.classUnderTest().booleanIterator();
         Assert.assertTrue(booleanIterator.hasNext());
-        Verify.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
     }
 }

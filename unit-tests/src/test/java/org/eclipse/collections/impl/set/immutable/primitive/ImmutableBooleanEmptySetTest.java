@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -157,7 +157,16 @@ public class ImmutableBooleanEmptySetTest extends AbstractImmutableBooleanCollec
     @Test
     public void noneSatisfy()
     {
-        Assert.assertFalse(this.classUnderTest().noneSatisfy(BooleanPredicates.alwaysTrue()));
-        Assert.assertFalse(this.classUnderTest().noneSatisfy(BooleanPredicates.alwaysFalse()));
+        Assert.assertTrue(this.classUnderTest().noneSatisfy(BooleanPredicates.alwaysTrue()));
+        Assert.assertTrue(this.classUnderTest().noneSatisfy(BooleanPredicates.alwaysFalse()));
+    }
+
+    @Test
+    public void cartesianProduct()
+    {
+        Assert.assertEquals(Sets.immutable.empty(), this.classUnderTest().cartesianProduct(BooleanSets.immutable.with(true)).toSet());
+        Assert.assertEquals(Sets.immutable.empty(), this.classUnderTest().cartesianProduct(BooleanSets.immutable.with(false)).toSet());
+        Assert.assertEquals(Sets.immutable.empty(), this.classUnderTest().cartesianProduct(BooleanSets.immutable.with(true, false)).toSet());
+        Assert.assertEquals(Sets.immutable.empty(), this.classUnderTest().cartesianProduct(BooleanSets.immutable.empty()).toSet());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -43,13 +43,13 @@ public class EmptyListTest
     @Test
     public void get()
     {
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().get(0));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().get(0));
     }
 
     @Test
     public void set()
     {
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().set(0, null));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().set(0, null));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class EmptyListTest
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> new EmptyList<>().getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> new EmptyList<>().getOnly());
     }
 
     @Test
@@ -90,37 +90,37 @@ public class EmptyListTest
     @Test
     public void min()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().min(Comparators.naturalOrder()));
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().min(Comparators.naturalOrder()));
     }
 
     @Test
     public void max()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().max(Comparators.naturalOrder()));
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().max(Comparators.naturalOrder()));
     }
 
     @Test
     public void min_without_comparator()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().min());
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().min());
     }
 
     @Test
     public void max_without_comparator()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().max());
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().max());
     }
 
     @Test
     public void minBy()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().minBy(String::valueOf));
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().minBy(String::valueOf));
     }
 
     @Test
     public void maxBy()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().maxBy(String::valueOf));
+        Assert.assertThrows(NoSuchElementException.class, () -> Lists.fixedSize.of().maxBy(String::valueOf));
     }
 
     @Test
@@ -269,7 +269,7 @@ public class EmptyListTest
     {
         Iterator<Object> iterator = new EmptyList<>().iterator();
         Assert.assertFalse(iterator.hasNext());
-        Verify.assertThrows(NoSuchElementException.class, iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Test
@@ -278,8 +278,8 @@ public class EmptyListTest
         ListIterator<Object> iterator = new EmptyList<>().listIterator();
         Assert.assertFalse(iterator.hasNext());
         Assert.assertFalse(iterator.hasPrevious());
-        Verify.assertThrows(NoSuchElementException.class, iterator::next);
-        Verify.assertThrows(NoSuchElementException.class, iterator::previous);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::previous);
     }
 
     @Test
@@ -288,9 +288,9 @@ public class EmptyListTest
         ListIterator<Object> iterator = new EmptyList<>().listIterator(0);
         Assert.assertFalse(iterator.hasNext());
         Assert.assertFalse(iterator.hasPrevious());
-        Verify.assertThrows(NoSuchElementException.class, iterator::next);
-        Verify.assertThrows(NoSuchElementException.class, iterator::previous);
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().listIterator(1));
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::previous);
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> new EmptyList<>().listIterator(1));
     }
 
     @Test

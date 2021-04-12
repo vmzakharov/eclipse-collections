@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -154,8 +154,8 @@ public class ArrayListIterateTest
         MutableList<Integer> reverseResults = Lists.mutable.empty();
         ArrayListIterate.forEach(integers, 4, 0, reverseResults::add);
         Assert.assertEquals(ListIterate.reverseThis(integers), reverseResults);
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(integers, 4, -1, reverseResults::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(integers, -1, 4, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(integers, 4, -1, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(integers, -1, 4, reverseResults::add));
     }
 
     @Test
@@ -169,8 +169,8 @@ public class ArrayListIterateTest
         MutableList<Integer> reverseResults = Lists.mutable.empty();
         ArrayListIterate.forEach(optimisableList, 4, 0, reverseResults::add);
         Assert.assertEquals(ListIterate.reverseThis(expected), reverseResults);
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(optimisableList, 104, -1, reverseResults::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(optimisableList, -1, 4, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(optimisableList, 104, -1, reverseResults::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEach(optimisableList, -1, 4, reverseResults::add));
     }
 
     @Test
@@ -184,8 +184,8 @@ public class ArrayListIterateTest
         ObjectIntProcedure<Integer> objectIntProcedure = ObjectIntProcedures.fromProcedure(reverseResults::add);
         ArrayListIterate.forEachWithIndex(integers, 4, 0, objectIntProcedure);
         Assert.assertEquals(ListIterate.reverseThis(integers), reverseResults);
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(integers, 4, -1, objectIntProcedure));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(integers, -1, 4, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(integers, 4, -1, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(integers, -1, 4, objectIntProcedure));
     }
 
     @Test
@@ -200,8 +200,8 @@ public class ArrayListIterateTest
         ObjectIntProcedure<Integer> objectIntProcedure = ObjectIntProcedures.fromProcedure(reverseResults::add);
         ArrayListIterate.forEachWithIndex(expected, 104, 0, objectIntProcedure);
         Assert.assertEquals(ListIterate.reverseThis(expected), reverseResults);
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(expected, 104, -1, objectIntProcedure));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(expected, -1, 104, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(expected, 104, -1, objectIntProcedure));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> ArrayListIterate.forEachWithIndex(expected, -1, 104, objectIntProcedure));
     }
 
     @Test

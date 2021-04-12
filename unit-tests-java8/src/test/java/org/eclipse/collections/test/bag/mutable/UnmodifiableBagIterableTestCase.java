@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -14,7 +14,7 @@ import org.eclipse.collections.test.UnmodifiableMutableCollectionTestCase;
 import org.eclipse.collections.test.bag.mutable.sorted.MutableBagIterableTestCase;
 import org.junit.Test;
 
-import static org.eclipse.collections.impl.test.Verify.assertThrows;
+import static org.junit.Assert.assertThrows;
 
 public interface UnmodifiableBagIterableTestCase extends UnmodifiableMutableCollectionTestCase, MutableBagIterableTestCase
 {

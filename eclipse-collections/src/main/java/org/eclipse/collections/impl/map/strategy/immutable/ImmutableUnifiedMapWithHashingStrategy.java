@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -12,6 +12,7 @@ package org.eclipse.collections.impl.map.strategy.immutable;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.collections.api.RichIterable;
@@ -22,6 +23,7 @@ import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.block.factory.HashingStrategies;
@@ -198,6 +200,22 @@ public class ImmutableUnifiedMapWithHashingStrategy<K, V>
     }
 
     @Override
+    public ImmutableMap<K, V> newWithMap(Map<? extends K, ? extends V> map)
+    {
+        UnifiedMapWithHashingStrategy<K, V> result = UnifiedMapWithHashingStrategy.newMap(this.delegate);
+        result.putAll(map);
+        return result.toImmutable();
+    }
+
+    @Override
+    public ImmutableMap<K, V> newWithMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        UnifiedMapWithHashingStrategy<K, V> map = UnifiedMapWithHashingStrategy.newMap(this.delegate);
+        mapIterable.forEachKeyValue(map::put);
+        return map.toImmutable();
+    }
+
+    @Override
     public ImmutableMap<K, V> newWithAllKeyValueArguments(Pair<? extends K, ? extends V>... keyValuePairs)
     {
         UnifiedMapWithHashingStrategy<K, V> result = UnifiedMapWithHashingStrategy.newMap(this.delegate);
@@ -230,7 +248,9 @@ public class ImmutableUnifiedMapWithHashingStrategy<K, V>
     @Override
     public <R> ImmutableMap<K, R> collectValues(Function2<? super K, ? super V, ? extends R> function)
     {
-        MutableMap<K, R> result = MapIterate.collectValues(this, function,
+        MutableMap<K, R> result = MapIterate.collectValues(
+                this,
+                function,
                 UnifiedMapWithHashingStrategy.newMap(this.delegate.hashingStrategy(), this.delegate.size()));
         return result.toImmutable();
     }

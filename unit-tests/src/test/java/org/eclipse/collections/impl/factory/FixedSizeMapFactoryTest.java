@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -114,5 +114,13 @@ public class FixedSizeMapFactoryTest
         Verify.assertSize(2, map3);
         Verify.assertContainsAllKeyValues(map3, key, 3, new Key("not a dupe"), 2);
         Assert.assertSame(key, map3.keysView().detect(key::equals));
+    }
+
+    @Test
+    public void testWithMap()
+
+    {
+        MutableMap<String, String> map = Maps.fixedSize.of("key1", "value1", "key2", "value2", "key3", "value3");
+        Assert.assertThrows(UnsupportedOperationException.class, () -> map.withMap(Maps.fixedSize.of("key4", "value4")));
     }
 }

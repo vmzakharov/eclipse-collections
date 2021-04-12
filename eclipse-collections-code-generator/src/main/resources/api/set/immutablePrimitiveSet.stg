@@ -43,6 +43,66 @@ public interface Immutable<name>Set extends Immutable<name>Collection, <name>Set
     @Override
     \<V> ImmutableSet\<V> collect(<name>ToObjectFunction\<? extends V> function);
 
+    /**
+     * @since 11.0.
+     */
+    @Override
+    default Immutable<name>Set union(<name>Set set)
+    {
+        if (this.size() > set.size())
+        {
+            return this.toSet().withAll(set).toImmutable();
+        }
+        else
+        {
+            return set.toSet().withAll(this).toImmutable();
+        }
+    }
+
+    /**
+     * Returns the set of all objects that are members of both {@code this} and {@code set}. The intersection of
+     * [1, 2, 3] and [2, 3, 4] is the set [2, 3].
+     *
+     * @since 11.0.
+     */
+    @Override
+    default Immutable<name>Set intersect(<name>Set set)
+    {
+        if (this.size() \< set.size())
+        {
+            return this.select(set::contains);
+        }
+        else
+        {
+            return set.select(this::contains).toImmutable();
+        }
+    }
+
+    /**
+     * Returns the set of all members of {@code this} that are not members of {@code set}. The difference of
+     * [1, 2, 3] and [2, 3, 4] is [1].
+     *
+     * @since 11.0.
+     */
+    @Override
+    default Immutable<name>Set difference(<name>Set set)
+    {
+        return this.reject(set::contains);
+    }
+
+    /**
+     * Returns the set of all objects that are a member of exactly one of {@code this} and {@code set} (elements which
+     * are in one of the sets, but not in both). For instance, for the sets [1, 2, 3] and [2, 3, 4], the symmetric
+     * difference set is [1, 4] . It is the set difference of the union and the intersection.
+     *
+     * @since 11.0.
+     */
+    @Override
+    default Immutable<name>Set symmetricDifference(<name>Set set)
+    {
+        return this.toSet().symmetricDifference(set).toImmutable();
+    }
+
     <immutableAPI(fileName(primitive), type, name)>
 }
 

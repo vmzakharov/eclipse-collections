@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Bhavana Hindupur and others.
+ * Copyright (c) 2021 Bhavana Hindupur and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -19,10 +19,13 @@ import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.bimap.ImmutableBiMap;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.api.block.function.Function0;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.map.MapIterable;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.set.MutableSetMultimap;
 import org.eclipse.collections.api.ordered.OrderedIterable;
 import org.eclipse.collections.api.partition.set.PartitionMutableSet;
@@ -199,6 +202,37 @@ public class SynchronizedBiMap<K, V> extends AbstractSynchronizedMapIterable<K, 
         }
     }
 
+    /**
+     * @since 11.0
+     */
+    @Override
+    public <KK, VV> MutableMap<KK, VV> aggregateBy(
+            Function<? super V, ? extends KK> groupBy,
+            Function0<? extends VV> zeroValueFactory,
+            Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
+    {
+        synchronized (this.lock)
+        {
+            return this.getDelegate().aggregateBy(groupBy, zeroValueFactory, nonMutatingAggregator);
+        }
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    public <K1, V1, V2> MutableMap<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        synchronized (this.lock)
+        {
+            return this.getDelegate().aggregateBy(keyFunction, valueFunction, zeroValueFactory, nonMutatingAggregator);
+        }
+    }
+
     @Override
     public MutableSetMultimap<V, K> flip()
     {
@@ -299,6 +333,22 @@ public class SynchronizedBiMap<K, V> extends AbstractSynchronizedMapIterable<K, 
         {
             this.putAll(map);
             return this;
+        }
+    }
+
+    @Override
+    public MutableBiMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        this.putAllMapIterable(mapIterable);
+        return this;
+    }
+
+    @Override
+    public void putAllMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        synchronized (this.lock)
+        {
+            mapIterable.forEachKeyValue(this.getDelegate()::put);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -73,7 +73,7 @@ public class ImmutableBooleanEmptyStackTest extends AbstractImmutableBooleanStac
     public void peekWithCount()
     {
         Assert.assertEquals(BooleanArrayList.newListWith(), this.classUnderTest().peek(0));
-        Verify.assertThrows(EmptyStackException.class, () -> this.classUnderTest().peek(1));
+        Assert.assertThrows(EmptyStackException.class, () -> this.classUnderTest().peek(1));
     }
 
     @Override

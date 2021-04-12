@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -27,6 +27,7 @@ import org.eclipse.collections.api.bag.primitive.MutableIntBag;
 import org.eclipse.collections.api.bag.primitive.MutableLongBag;
 import org.eclipse.collections.api.bag.primitive.MutableShortBag;
 import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.api.block.function.Function0;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.function.primitive.BooleanFunction;
 import org.eclipse.collections.api.block.function.primitive.ByteFunction;
@@ -41,6 +42,7 @@ import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.multimap.bag.MutableBagMultimap;
 import org.eclipse.collections.api.multimap.set.MutableSetMultimap;
@@ -121,6 +123,22 @@ public class SynchronizedMutableMap<K, V>
         {
             this.putAll(map);
             return this;
+        }
+    }
+
+    @Override
+    public MutableMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        this.putAllMapIterable(mapIterable);
+        return this;
+    }
+
+    @Override
+    public void putAllMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        synchronized (this.lock)
+        {
+            mapIterable.forEachKeyValue(this.getDelegate()::put);
         }
     }
 
@@ -383,6 +401,31 @@ public class SynchronizedMutableMap<K, V>
     public <KK> MutableBagMultimap<KK, V> groupByEach(Function<? super V, ? extends Iterable<KK>> function)
     {
         return (MutableBagMultimap<KK, V>) super.groupByEach(function);
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    public <KK, VV> MutableMap<KK, VV> aggregateBy(
+            Function<? super V, ? extends KK> groupBy,
+            Function0<? extends VV> zeroValueFactory,
+            Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
+    {
+        return (MutableMap<KK, VV>) super.aggregateBy(groupBy, zeroValueFactory, nonMutatingAggregator);
+    }
+
+    /**
+     * @since 11.0
+     */
+    @Override
+    public <K1, V1, V2> MutableMap<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        return (MutableMap<K1, V2>) super.aggregateBy(keyFunction, valueFunction, zeroValueFactory, nonMutatingAggregator);
     }
 
     /**

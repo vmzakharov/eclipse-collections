@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Shotaro Sano and others.
+ * Copyright (c) 2021 Shotaro Sano and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -212,7 +212,7 @@ public abstract class AbstractSynchronizedMultimap<K, V> implements MutableMulti
     }
 
     @Override
-    public void forEachKeyMultiValues(Procedure2<? super K, ? super Iterable<V>> procedure)
+    public void forEachKeyMultiValues(Procedure2<? super K, ? super RichIterable<V>> procedure)
     {
         synchronized (this.lock)
         {
@@ -362,7 +362,7 @@ public abstract class AbstractSynchronizedMultimap<K, V> implements MutableMulti
     }
 
     @Override
-    public <R extends MutableMultimap<K, V>> R selectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate, R target)
+    public <R extends MutableMultimap<K, V>> R selectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate, R target)
     {
         synchronized (this.lock)
         {
@@ -371,7 +371,7 @@ public abstract class AbstractSynchronizedMultimap<K, V> implements MutableMulti
     }
 
     @Override
-    public <R extends MutableMultimap<K, V>> R rejectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate, R target)
+    public <R extends MutableMultimap<K, V>> R rejectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate, R target)
     {
         synchronized (this.lock)
         {

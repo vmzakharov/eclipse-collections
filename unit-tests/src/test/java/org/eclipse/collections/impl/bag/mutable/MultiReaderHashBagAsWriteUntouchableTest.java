@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -14,7 +14,6 @@ import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.collection.mutable.AbstractCollectionTestCase;
 import org.eclipse.collections.impl.factory.Sets;
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,13 +28,13 @@ public class MultiReaderHashBagAsWriteUntouchableTest extends AbstractCollection
     @Override
     public void asSynchronized()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.newWith().asSynchronized());
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.newWith().asSynchronized());
     }
 
     @Override
     public void asUnmodifiable()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.newWith().asUnmodifiable());
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.newWith().asUnmodifiable());
     }
 
     @Test

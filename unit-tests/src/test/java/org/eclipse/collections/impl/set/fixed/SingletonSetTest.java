@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -410,19 +410,19 @@ public class SingletonSetTest extends AbstractMemoryEfficientMutableSetTestCase
     @Test
     public void removeAll()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.intSet.removeAll(Lists.fixedSize.of(1, 2)));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.intSet.removeAll(Lists.fixedSize.of(1, 2)));
     }
 
     @Test
     public void retainAll()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.intSet.retainAll(Lists.fixedSize.of(2)));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.intSet.retainAll(Lists.fixedSize.of(2)));
     }
 
     @Test
     public void clear()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, this.intSet::clear);
+        Assert.assertThrows(UnsupportedOperationException.class, this.intSet::clear);
     }
 
     @Override
@@ -476,7 +476,7 @@ public class SingletonSetTest extends AbstractMemoryEfficientMutableSetTestCase
     @Test
     public void removeWithPredicate()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.intSet.removeIf(Predicates.isNull()));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.intSet.removeIf(Predicates.isNull()));
     }
 
     @Test

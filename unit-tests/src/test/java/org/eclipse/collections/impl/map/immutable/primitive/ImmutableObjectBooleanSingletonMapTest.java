@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -162,7 +162,7 @@ public class ImmutableObjectBooleanSingletonMapTest extends AbstractImmutableObj
         Assert.assertTrue(iterator.hasNext());
         Assert.assertTrue(iterator.next());
         Assert.assertFalse(iterator.hasNext());
-        Verify.assertThrows(NoSuchElementException.class, (Runnable) iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
     }
 
     @Override
@@ -188,9 +188,9 @@ public class ImmutableObjectBooleanSingletonMapTest extends AbstractImmutableObj
     public void getOrThrow()
     {
         Assert.assertTrue(this.classUnderTest().getOrThrow("1"));
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow("5"));
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow("0"));
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow(null));
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow("5"));
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow("0"));
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOrThrow(null));
     }
 
     @Override

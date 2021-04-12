@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -16,6 +16,7 @@ import org.eclipse.collections.api.collection.MutableCollection;
 import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.impl.block.procedure.CollectionAddProcedure;
 import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.list.Interval;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.test.SerializeTestHelper;
@@ -25,11 +26,11 @@ import org.eclipse.collections.test.RichIterableWithDuplicatesTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.eclipse.collections.impl.test.Verify.assertThrows;
 import static org.eclipse.collections.test.IterableTestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public interface MapIterableTestCase extends RichIterableWithDuplicatesTestCase
@@ -66,6 +67,35 @@ public interface MapIterableTestCase extends RichIterableWithDuplicatesTestCase
         assertEquals(11, map.ifPresentApply("One", x -> x + 10));
         assertNull(map.ifPresentApply("Zero", x -> x + 10));
         assertEquals(map, this.newWithKeysValues("Three", 3, "Two", 2, "One", 1));
+    }
+
+    @Test
+    default void MapIterable_aggregateBy()
+    {
+        String oneToFive = "oneToFive";
+        String sixToNine = "sixToNine";
+        String tenToFifteen = "tenToFifteen";
+        String sixteenToTwenty = "sixteenToTwenty";
+
+        MapIterable<String, Interval> map = Maps.mutable.with(oneToFive, Interval.fromTo(1, 5),
+                sixToNine, Interval.fromTo(6, 9), tenToFifteen, Interval.fromTo(10, 15),
+                sixteenToTwenty, Interval.fromTo(16, 20));
+
+        String lessThanTen = "lessThanTen";
+        String greaterOrEqualsToTen = "greaterOrEqualsToTen";
+
+        MapIterable<String, Long> result = map.aggregateBy(
+                eachKey -> {
+                    return eachKey.equals(oneToFive) || eachKey.equals(sixToNine) ? lessThanTen : greaterOrEqualsToTen;
+                },
+                each -> each.sumOfInt(Integer::intValue),
+                () -> 0L,
+                (argument1, argument2) -> argument1 + argument2);
+
+        MapIterable<String, Long> expected =
+                Maps.mutable.with(lessThanTen, Interval.fromTo(1, 9).sumOfInt(Integer::intValue),
+                        greaterOrEqualsToTen, Interval.fromTo(10, 20).sumOfInt(Integer::intValue));
+        Assert.assertEquals(expected, result);
     }
 
     @Test

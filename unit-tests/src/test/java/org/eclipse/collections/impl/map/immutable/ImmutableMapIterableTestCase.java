@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -60,7 +60,8 @@ public abstract class ImmutableMapIterableTestCase
         MutableSet<Integer> actualKeys = UnifiedSet.newSet();
         MutableSet<String> actualValues = UnifiedSet.newSet();
 
-        this.classUnderTest().forEachKeyValue((key, value) -> {
+        this.classUnderTest().forEachKeyValue((key, value) ->
+        {
             actualKeys.add(key);
             actualValues.add(value);
         });
@@ -120,7 +121,8 @@ public abstract class ImmutableMapIterableTestCase
     @Test
     public void iteratorThrows()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> {
+        Assert.assertThrows(UnsupportedOperationException.class, () ->
+        {
             Iterator<String> iterator = this.classUnderTest().iterator();
             iterator.remove();
         });
@@ -165,6 +167,23 @@ public abstract class ImmutableMapIterableTestCase
 
         // Present key behavior
         Assert.assertEquals("1", classUnderTest.getIfAbsent(1, new PassThruFunction0<>(absentValue)));
+
+        // Still unchanged
+        Assert.assertEquals(this.equalUnifiedMap(), classUnderTest);
+    }
+
+    @Test
+    public void getOrDefault()
+    {
+        Integer absentKey = this.size() + 1;
+        String absentValue = String.valueOf(absentKey);
+
+        // Absent key behavior
+        ImmutableMapIterable<Integer, String> classUnderTest = this.classUnderTest();
+        Assert.assertEquals(absentValue, classUnderTest.getOrDefault(absentKey, absentValue));
+
+        // Present key behavior
+        Assert.assertEquals("1", classUnderTest.getOrDefault(1, absentValue));
 
         // Still unchanged
         Assert.assertEquals(this.equalUnifiedMap(), classUnderTest);
@@ -228,7 +247,8 @@ public abstract class ImmutableMapIterableTestCase
         MutableSet<String> actualValues = UnifiedSet.newSet();
         MutableList<Object> actualParameters = Lists.mutable.of();
 
-        this.classUnderTest().forEachWith((eachValue, parameter) -> {
+        this.classUnderTest().forEachWith((eachValue, parameter) ->
+        {
             actualValues.add(eachValue);
             actualParameters.add(parameter);
         }, actualParameter);
@@ -243,7 +263,8 @@ public abstract class ImmutableMapIterableTestCase
         MutableSet<String> actualValues = UnifiedSet.newSet();
         MutableList<Integer> actualIndices = Lists.mutable.of();
 
-        this.classUnderTest().forEachWithIndex((eachValue, index) -> {
+        this.classUnderTest().forEachWithIndex((eachValue, index) ->
+        {
             actualValues.add(eachValue);
             actualIndices.add(index);
         });
@@ -297,25 +318,25 @@ public abstract class ImmutableMapIterableTestCase
     @Test
     public void putAll()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).putAll(null));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).putAll(null));
     }
 
     @Test
     public void clear()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).clear());
+        Assert.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).clear());
     }
 
     @Test
     public void put()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).put(null, null));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).put(null, null));
     }
 
     @Test
     public void remove()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).remove(null));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> ((Map<Integer, String>) this.classUnderTest()).remove(null));
     }
 
     @Test
@@ -360,6 +381,103 @@ public abstract class ImmutableMapIterableTestCase
         ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
         ImmutableMapIterable<Integer, String> immutable2 = immutable.newWithKeyValue(Integer.MAX_VALUE, Integer.toString(Integer.MAX_VALUE));
         Verify.assertSize(immutable.size() + 1, immutable2);
+    }
+
+    @Test
+    public void newWithMap1()
+    {
+        ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
+        ImmutableMapIterable<Integer, String> immutable2 =
+                immutable.newWithMap(UnifiedMap.newMapWith(
+                        Tuples.pair(
+                                Integer.MAX_VALUE,
+                                Integer.toString(Integer.MAX_VALUE)),
+                        Tuples.pair(
+                                Integer.MIN_VALUE,
+                                Integer.toString(Integer.MIN_VALUE))));
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size() + 2, immutable2);
+    }
+
+    @Test
+    public void newWithMapTargetEmpty()
+    {
+        ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
+        ImmutableMapIterable<Integer, String> immutable2 = immutable.newWithMap(Maps.mutable.empty());
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size(), immutable2);
+    }
+
+    @Test
+    public void newWithMapEmptyAndTargetEmpty()
+    {
+        ImmutableMapIterable<Integer, String> immutable = Maps.immutable.empty();
+        ImmutableMapIterable<Integer, String> immutable2 = immutable.newWithMap(Maps.mutable.empty());
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size(), immutable2);
+    }
+
+    @Test
+    public void withMapNull()
+    {
+        Assert.assertThrows(NullPointerException.class, () -> this.classUnderTest().newWithMap(null));
+    }
+
+    @Test
+    public void newWithMapIterable()
+    {
+        ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
+        ImmutableMapIterable<Integer, String> immutable2 =
+                immutable.newWithMapIterable(Maps.immutable.of(
+                        Integer.MAX_VALUE,
+                        Integer.toString(Integer.MAX_VALUE),
+                        Integer.MIN_VALUE,
+                        Integer.toString(Integer.MIN_VALUE)));
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size() + 2, immutable2);
+    }
+
+    @Test
+    public void newWithMapIterableTargetEmpty()
+    {
+        ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
+        ImmutableMapIterable<Integer, String> immutable2 =
+                immutable.newWithMapIterable(Maps.immutable.empty());
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size(), immutable2);
+    }
+
+    @Test
+    public void withMapIterableEmptyAndTargetEmpty()
+    {
+        ImmutableMapIterable<Integer, String> immutable = this.classUnderTest();
+        ImmutableMapIterable<Integer, String> immutable2 = immutable.newWithMapIterable(Maps.immutable.empty());
+        MutableMap<Integer, String> mutableMap = Maps.mutable.withMap(immutable.castToMap());
+        MutableMap<Integer, String> mutableMap2 = Maps.mutable.withMap(immutable2.castToMap());
+        mutableMap.putAll(mutableMap2);
+        Verify.assertMapsEqual(mutableMap, mutableMap2);
+        Verify.assertSize(immutable.size(), immutable2);
+    }
+
+    @Test
+    public void withMapIterableNull()
+    {
+        Assert.assertThrows(NullPointerException.class, () -> this.classUnderTest().newWithMapIterable(null));
     }
 
     @Test

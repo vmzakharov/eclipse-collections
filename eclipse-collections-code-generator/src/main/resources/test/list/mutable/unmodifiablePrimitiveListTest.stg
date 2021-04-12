@@ -21,8 +21,8 @@ import java.util.NoSuchElementException;
 
 import org.eclipse.collections.api.iterator.<name>Iterator;
 import org.eclipse.collections.api.iterator.Mutable<name>Iterator;
+<if(!primitive.booleanPrimitive)>import org.eclipse.collections.impl.block.factory.Comparators;<endif>
 import org.eclipse.collections.impl.block.factory.primitive.<name>Predicates;
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -121,6 +121,13 @@ public class Unmodifiable<name>ListTest extends Abstract<name>ListTestCase
     public void set()
     {
         this.list.set(1, <(literal.(type))("4")>);
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void swap()
+    {
+        this.list.swap(0, 1);
     }
 
     @Override
@@ -236,6 +243,69 @@ public class Unmodifiable<name>ListTest extends Abstract<name>ListTestCase
     }
 
     @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortWithPrimitiveComparator()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis(<wrapperName>::compare);
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortWithOddEvenComparator()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis((a, b) -> (int) ((int) ((int) a & 1) - ((int) b & 1)));
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortWithKeyExtractorNaturalComparator()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThisBy(<wrapperName>::toString);
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortWithKeyExtractorUnnaturalComparator()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThisBy(<wrapperName>::toString, Comparators.naturalOrder().reversed());
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortShuffledInputWithDupes()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortShuffledInput()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortSortedInput()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void sortReversedSortedInput()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).sortThis();
+    }
+
+    @Override
+    @Test(expected = UnsupportedOperationException.class)
+    public void shuffleThis()
+    {
+        new Unmodifiable<name>List(new <name>ArrayList()).shuffleThis();
+    }
+
+    @Override
     @Test
     public void contains()
     {
@@ -290,7 +360,7 @@ public class Unmodifiable<name>ListTest extends Abstract<name>ListTestCase
         Mutable<name>Iterator iterator = unmodifiable<name>List.<type>Iterator();
         Assert.assertTrue(iterator.hasNext());
         iterator.next();
-        Verify.assertThrows(UnsupportedOperationException.class, iterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator::remove);
     }
 
     @Override
@@ -300,7 +370,7 @@ public class Unmodifiable<name>ListTest extends Abstract<name>ListTestCase
         Unmodifiable<name>List unmodifiable<name>List = this.classUnderTest();
         Mutable<name>Iterator iterator = unmodifiable<name>List.<type>Iterator();
         Assert.assertTrue(iterator.hasNext());
-        Verify.assertThrows(UnsupportedOperationException.class, iterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator::remove);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -123,6 +123,23 @@ public class ImmutableEmptySortedMapTest extends ImmutableSortedMapTestCase
 
         String absentValue = String.valueOf(absentKey);
         Assert.assertFalse(classUnderTest.containsValue(absentValue));
+
+        // Still unchanged
+        Assert.assertEquals(this.equalUnifiedMap(), classUnderTest);
+    }
+
+    @Override
+    @Test
+    public void getOrDefault()
+    {
+        super.getOrDefault();
+
+        Integer absentKey = this.size() + 1;
+        String absentValue = String.valueOf(absentKey);
+
+        // Absent key behavior
+        ImmutableSortedMap<Integer, String> classUnderTest = this.classUnderTest();
+        Assert.assertEquals(absentValue, classUnderTest.getOrDefault(absentKey, absentValue));
 
         // Still unchanged
         Assert.assertEquals(this.equalUnifiedMap(), classUnderTest);
@@ -406,6 +423,6 @@ public class ImmutableEmptySortedMapTest extends ImmutableSortedMapTestCase
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
 import org.eclipse.collections.impl.block.factory.Predicates;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.list.Interval;
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,14 +71,14 @@ public class TakeWhileIteratorTest
     @Test
     public void remove()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.<Integer>of(), Predicates.alwaysTrue()).remove());
+        Assert.assertThrows(UnsupportedOperationException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.<Integer>of(), Predicates.alwaysTrue()).remove());
     }
 
     @Test
     public void noSuchElementException()
     {
-        Verify.assertThrows(NoSuchElementException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.<Integer>of(), Predicates.alwaysTrue()).next());
+        Assert.assertThrows(NoSuchElementException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.<Integer>of(), Predicates.alwaysTrue()).next());
 
-        Verify.assertThrows(NoSuchElementException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.of(1, 2, 3), Predicates.alwaysFalse()).next());
+        Assert.assertThrows(NoSuchElementException.class, () -> new TakeWhileIterator<>(Lists.fixedSize.of(1, 2, 3), Predicates.alwaysFalse()).next());
     }
 }

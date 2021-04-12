@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -43,6 +43,7 @@ import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.map.ConcurrentMutableMap;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.block.procedure.MapEntryToProcedure2;
@@ -1728,9 +1729,9 @@ public final class ConcurrentHashMap<K, V>
 
             if (this.size() > col.size())
             {
-                for (Iterator<?> itr = col.iterator(); itr.hasNext(); )
+                for (Object o : col)
                 {
-                    removed |= this.remove(itr.next());
+                    removed |= this.remove(o);
                 }
             }
             else
@@ -1983,6 +1984,12 @@ public final class ConcurrentHashMap<K, V>
     public ConcurrentHashMap<K, V> withMap(Map<? extends  K, ? extends V> map)
     {
         return (ConcurrentHashMap<K, V>) super.withMap(map);
+    }
+
+    @Override
+    public ConcurrentHashMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        return (ConcurrentHashMap<K, V>) super.withMapIterable(mapIterable);
     }
 
     @Override

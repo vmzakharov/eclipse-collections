@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -20,9 +20,19 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.stream.Stream;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
+import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.bag.MutableBag;
+import org.eclipse.collections.api.bag.sorted.ImmutableSortedBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.block.function.Function;
@@ -55,6 +65,7 @@ import org.eclipse.collections.api.collection.primitive.MutableFloatCollection;
 import org.eclipse.collections.api.collection.primitive.MutableIntCollection;
 import org.eclipse.collections.api.collection.primitive.MutableLongCollection;
 import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.MutableMapIterable;
@@ -62,19 +73,20 @@ import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectLongMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.Twin;
 import org.eclipse.collections.impl.block.factory.PrimitiveFunctions;
 import org.eclipse.collections.impl.block.procedure.MutatingAggregationProcedure;
-import org.eclipse.collections.impl.block.procedure.NonMutatingAggregationProcedure;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 /**
- * AbstractMultiReaderMutableCollection is a common abstraction that provides thread-safe collection behaviors.
+ * AbstractMultiReaderMutableCollection is an abstraction that provides thread-safe collection behaviors.
  * Subclasses of this class must provide implementations of getDelegate() and getLock().
  */
 @SuppressWarnings({"unused", "TransientFieldInNonSerializableClass"})
@@ -200,6 +212,15 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public ImmutableList<T> toImmutableList()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableList();
+        }
+    }
+
+    @Override
     public <NK, NV> MutableMap<NK, NV> toMap(
             Function<? super T, ? extends NK> keyFunction,
             Function<? super T, ? extends NV> valueFunction)
@@ -287,11 +308,29 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public ImmutableSet<T> toImmutableSet()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSet();
+        }
+    }
+
+    @Override
     public MutableBag<T> toBag()
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().toBag();
+        }
+    }
+
+    @Override
+    public ImmutableBag<T> toImmutableBag()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableBag();
         }
     }
 
@@ -305,11 +344,29 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public ImmutableSortedBag<T> toImmutableSortedBag()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedBag();
+        }
+    }
+
+    @Override
     public MutableSortedBag<T> toSortedBag(Comparator<? super T> comparator)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().toSortedBag(comparator);
+        }
+    }
+
+    @Override
+    public ImmutableSortedBag<T> toImmutableSortedBag(Comparator<? super T> comparator)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedBag(comparator);
         }
     }
 
@@ -324,6 +381,15 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <V extends Comparable<? super V>> ImmutableSortedBag<T> toImmutableSortedBagBy(Function<? super T, ? extends V> function)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedBagBy(function);
+        }
+    }
+
+    @Override
     public MutableList<T> toSortedList()
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
@@ -333,11 +399,29 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public ImmutableList<T> toImmutableSortedList()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedList();
+        }
+    }
+
+    @Override
     public MutableList<T> toSortedList(Comparator<? super T> comparator)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().toSortedList(comparator);
+        }
+    }
+
+    @Override
+    public ImmutableList<T> toImmutableSortedList(Comparator<? super T> comparator)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedList(comparator);
         }
     }
 
@@ -352,11 +436,29 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <V extends Comparable<? super V>> ImmutableList<T> toImmutableSortedListBy(Function<? super T, ? extends V> function)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedListBy(function);
+        }
+    }
+
+    @Override
     public MutableSortedSet<T> toSortedSet()
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().toSortedSet();
+        }
+    }
+
+    @Override
+    public ImmutableSortedSet<T> toImmutableSortedSet()
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedSet();
         }
     }
 
@@ -370,12 +472,30 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public ImmutableSortedSet<T> toImmutableSortedSet(Comparator<? super T> comparator)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedSet(comparator);
+        }
+    }
+
+    @Override
     public <V extends Comparable<? super V>> MutableSortedSet<T> toSortedSetBy(
             Function<? super T, ? extends V> function)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().toSortedSetBy(function);
+        }
+    }
+
+    @Override
+    public <V extends Comparable<? super V>> ImmutableSortedSet<T> toImmutableSortedSetBy(Function<? super T, ? extends V> function)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().toImmutableSortedSetBy(function);
         }
     }
 
@@ -638,11 +758,31 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super T, ? extends BooleanIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectBoolean(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super T> byteFunction, R target)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().collectByte(byteFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super T, ? extends ByteIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectByte(function, target);
         }
     }
 
@@ -656,11 +796,31 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super T, ? extends CharIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectChar(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super T> doubleFunction, R target)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().collectDouble(doubleFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super T, ? extends DoubleIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectDouble(function, target);
         }
     }
 
@@ -674,11 +834,31 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super T, ? extends FloatIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectFloat(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super T> intFunction, R target)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().collectInt(intFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super T, ? extends IntIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectInt(function, target);
         }
     }
 
@@ -692,11 +872,31 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super T, ? extends LongIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectLong(function, target);
+        }
+    }
+
+    @Override
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
         {
             return this.getDelegate().collectShort(shortFunction, target);
+        }
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super T, ? extends ShortIterable> function, R target)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.getDelegate().flatCollectShort(function, target);
         }
     }
 
@@ -1257,17 +1457,6 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
     {
         MutableMap<K, V> map = UnifiedMap.newMap();
         this.forEach(new MutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, mutatingAggregator));
-        return map;
-    }
-
-    @Override
-    public <K, V> MutableMap<K, V> aggregateBy(
-            Function<? super T, ? extends K> groupBy,
-            Function0<? extends V> zeroValueFactory,
-            Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
-    {
-        MutableMap<K, V> map = UnifiedMap.newMap();
-        this.forEach(new NonMutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, nonMutatingAggregator));
         return map;
     }
 
@@ -1947,36 +2136,6 @@ public abstract class AbstractMultiReaderMutableCollection<T> implements Mutable
         public RichIterable<RichIterable<T>> chunk(int size)
         {
             return this.delegate.chunk(size);
-        }
-
-        @Override
-        public <K, V> MutableMap<K, V> aggregateInPlaceBy(
-                Function<? super T, ? extends K> groupBy,
-                Function0<? extends V> zeroValueFactory,
-                Procedure2<? super V, ? super T> mutatingAggregator)
-        {
-            MutableMap<K, V> map = UnifiedMap.newMap();
-            this.each(each -> {
-                K key = groupBy.valueOf(each);
-                V value = map.getIfAbsentPut(key, zeroValueFactory);
-                mutatingAggregator.value(value, each);
-            });
-            return map;
-        }
-
-        @Override
-        public <K, V> MutableMap<K, V> aggregateBy(
-                Function<? super T, ? extends K> groupBy,
-                Function0<? extends V> zeroValueFactory,
-                Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
-        {
-            MutableMap<K, V> map = UnifiedMap.newMap();
-            this.each(each -> {
-                K key = groupBy.valueOf(each);
-                V value = map.getIfAbsentPut(key, zeroValueFactory);
-                map.put(key, nonMutatingAggregator.value(value, each));
-            });
-            return map;
         }
     }
 

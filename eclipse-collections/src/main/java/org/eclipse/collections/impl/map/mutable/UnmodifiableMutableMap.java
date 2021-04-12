@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -17,8 +17,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.primitive.MutableBooleanBag;
 import org.eclipse.collections.api.bag.primitive.MutableByteBag;
@@ -61,6 +69,7 @@ import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.MutableMapIterable;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
@@ -284,6 +293,18 @@ public class UnmodifiableMutableMap<K, V>
     public MutableMap<K, V> withMap(Map<? extends K, ? extends V> map)
     {
         throw new UnsupportedOperationException("Cannot call withMap() on " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public MutableMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        throw new UnsupportedOperationException("Cannot call withMapIterable() on " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void putAllMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        throw new UnsupportedOperationException("Cannot call putAllMapIterable() on " + this.getClass().getSimpleName());
     }
 
     @Override
@@ -968,6 +989,13 @@ public class UnmodifiableMutableMap<K, V>
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super V, ? extends BooleanIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectBoolean(function, target);
+    }
+
+    @Override
     public MutableByteBag collectByte(ByteFunction<? super V> byteFunction)
     {
         return this.getMutableMap().collectByte(byteFunction);
@@ -977,6 +1005,13 @@ public class UnmodifiableMutableMap<K, V>
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super V> byteFunction, R target)
     {
         return this.getMutableMap().collectByte(byteFunction, target);
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super V, ? extends ByteIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectByte(function, target);
     }
 
     @Override
@@ -992,6 +1027,13 @@ public class UnmodifiableMutableMap<K, V>
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super V, ? extends CharIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectChar(function, target);
+    }
+
+    @Override
     public MutableDoubleBag collectDouble(DoubleFunction<? super V> doubleFunction)
     {
         return this.getMutableMap().collectDouble(doubleFunction);
@@ -1001,6 +1043,13 @@ public class UnmodifiableMutableMap<K, V>
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super V> doubleFunction, R target)
     {
         return this.getMutableMap().collectDouble(doubleFunction, target);
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super V, ? extends DoubleIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectDouble(function, target);
     }
 
     @Override
@@ -1016,6 +1065,13 @@ public class UnmodifiableMutableMap<K, V>
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super V, ? extends FloatIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectFloat(function, target);
+    }
+
+    @Override
     public MutableIntBag collectInt(IntFunction<? super V> intFunction)
     {
         return this.getMutableMap().collectInt(intFunction);
@@ -1025,6 +1081,13 @@ public class UnmodifiableMutableMap<K, V>
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super V> intFunction, R target)
     {
         return this.getMutableMap().collectInt(intFunction, target);
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super V, ? extends IntIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectInt(function, target);
     }
 
     @Override
@@ -1040,6 +1103,13 @@ public class UnmodifiableMutableMap<K, V>
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super V, ? extends LongIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectLong(function, target);
+    }
+
+    @Override
     public MutableShortBag collectShort(ShortFunction<? super V> shortFunction)
     {
         return this.getMutableMap().collectShort(shortFunction);
@@ -1049,6 +1119,13 @@ public class UnmodifiableMutableMap<K, V>
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super V> shortFunction, R target)
     {
         return this.getMutableMap().collectShort(shortFunction, target);
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super V, ? extends ShortIterable> function, R target)
+    {
+        return this.getMutableMap().flatCollectShort(function, target);
     }
 
     @Override
@@ -1147,23 +1224,5 @@ public class UnmodifiableMutableMap<K, V>
     public MutableSet<Pair<V, Integer>> zipWithIndex()
     {
         return this.getMutableMap().zipWithIndex();
-    }
-
-    @Override
-    public <K2, V2> MutableMap<K2, V2> aggregateInPlaceBy(
-            Function<? super V, ? extends K2> groupBy,
-            Function0<? extends V2> zeroValueFactory,
-            Procedure2<? super V2, ? super V> mutatingAggregator)
-    {
-        return this.getMutableMap().aggregateInPlaceBy(groupBy, zeroValueFactory, mutatingAggregator);
-    }
-
-    @Override
-    public <K2, V2> MutableMap<K2, V2> aggregateBy(
-            Function<? super V, ? extends K2> groupBy,
-            Function0<? extends V2> zeroValueFactory,
-            Function2<? super V2, ? super V, ? extends V2> nonMutatingAggregator)
-    {
-        return this.getMutableMap().aggregateBy(groupBy, zeroValueFactory, nonMutatingAggregator);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -17,6 +17,7 @@ import java.util.IntSummaryStatistics;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -25,8 +26,10 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.bag.Bag;
+import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.MutableBagIterable;
+import org.eclipse.collections.api.bag.sorted.ImmutableSortedBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.api.block.function.Function;
@@ -57,7 +60,12 @@ import org.eclipse.collections.api.collection.primitive.MutableIntCollection;
 import org.eclipse.collections.api.collection.primitive.MutableLongCollection;
 import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
 import org.eclipse.collections.api.factory.Bags;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedBags;
+import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
@@ -69,7 +77,9 @@ import org.eclipse.collections.api.multimap.Multimap;
 import org.eclipse.collections.api.multimap.MutableMultimap;
 import org.eclipse.collections.api.ordered.OrderedIterable;
 import org.eclipse.collections.api.partition.PartitionIterable;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.api.tuple.Pair;
 
@@ -178,6 +188,20 @@ public interface RichIterable<T>
      * @since 1.0
      */
     boolean contains(Object object);
+
+    /**
+     * Returns true if the iterable has an element which responds true to element.equals(value)
+     * after applying the specified function to the element.
+     *
+     * @since 10.3
+     */
+    default <V> boolean containsBy(
+            Function<? super T, ? extends V> function,
+            V value)
+    {
+        Objects.requireNonNull(function);
+        return this.anySatisfy(each -> Objects.equals(value, function.valueOf(each)));
+    }
 
     /**
      * Returns true if all elements in source are contained in this collection.
@@ -1183,6 +1207,118 @@ public interface RichIterable<T>
     <V> RichIterable<V> flatCollect(Function<? super T, ? extends Iterable<V>> function);
 
     /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableByteCollection> R flatCollectByte(Function<? super T, ? extends ByteIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableCharCollection> R flatCollectChar(Function<? super T, ? extends CharIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableIntCollection> R flatCollectInt(Function<? super T, ? extends IntIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableShortCollection> R flatCollectShort(Function<? super T, ? extends ShortIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableDoubleCollection> R flatCollectDouble(Function<? super T, ? extends DoubleIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableFloatCollection> R flatCollectFloat(Function<? super T, ? extends FloatIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableLongCollection> R flatCollectLong(Function<? super T, ? extends LongIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
+     * Same as flatCollect, only the results are collected into the target collection.
+     *
+     * @param function The {@link Function} to apply
+     * @param target   The collection into which results should be added.
+     * @return {@code target}, which will contain a flattened collection of results produced by applying the given {@code function}
+     * @see #flatCollect(Function)
+     */
+    default <R extends MutableBooleanCollection> R flatCollectBoolean(Function<? super T, ? extends BooleanIterable> function, R target)
+    {
+        this.forEach(each -> target.addAll(function.valueOf(each)));
+        return target;
+    }
+
+    /**
      * @since 9.2
      */
     default <P, V> RichIterable<V> flatCollectWith(Function2<? super T, ? super P, ? extends Iterable<V>> function, P parameter)
@@ -1615,6 +1751,129 @@ public interface RichIterable<T>
     <NK, NV> MutableBiMap<NK, NV> toBiMap(
             Function<? super T, ? extends NK> keyFunction,
             Function<? super T, ? extends NV> valueFunction);
+
+    /**
+     * Converts the RichIterable to the default ImmutableList implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableList<T> toImmutableList()
+    {
+        return Lists.immutable.withAll(this);
+    }
+
+    /**
+     * Converts the RichIterable to the default ImmutableSet implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableSet<T> toImmutableSet()
+    {
+        return Sets.immutable.withAll(this);
+    }
+
+    /**
+     * Converts the RichIterable to the default ImmutableBag implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableBag<T> toImmutableBag()
+    {
+        return Bags.immutable.withAll(this);
+    }
+
+    /**
+     * Converts the RichIterable to the default sorted ImmutableList implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableList<T> toImmutableSortedList()
+    {
+        return Lists.immutable.withAllSorted(this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableList implementation and sorts it using the specified comparator.
+     *
+     * @since 11.0
+     */
+    default ImmutableList<T> toImmutableSortedList(Comparator<? super T> comparator)
+    {
+        return Lists.immutable.withAllSorted(comparator, this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableList implementation and sorts it based on the natural order of the
+     * attribute returned by {@code function}.
+     *
+     * @since 11.0
+     */
+    default <V extends Comparable<? super V>> ImmutableList<T> toImmutableSortedListBy(Function<? super T, ? extends V> function)
+    {
+        return this.toImmutableSortedList(Comparator.comparing(function));
+    }
+
+    /**
+     * Converts the RichIterable to the default ImmutableSortedSet implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableSortedSet<T> toImmutableSortedSet()
+    {
+        return SortedSets.immutable.withAll(this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableSortedSet implementation and sorts it using the specified comparator.
+     *
+     * @since 11.0
+     */
+    default ImmutableSortedSet<T> toImmutableSortedSet(Comparator<? super T> comparator)
+    {
+        return SortedSets.immutable.withAll(comparator, this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableSortedSet implementation and sorts it based on the natural order of the
+     * attribute returned by {@code function}.
+     *
+     * @since 11.0
+     */
+    default <V extends Comparable<? super V>> ImmutableSortedSet<T> toImmutableSortedSetBy(Function<? super T, ? extends V> function)
+    {
+        return this.toImmutableSortedSet(Comparator.comparing(function));
+    }
+
+    /**
+     * Converts the RichIterable to the default ImmutableSortedBag implementation.
+     *
+     * @since 11.0
+     */
+    default ImmutableSortedBag<T> toImmutableSortedBag()
+    {
+        return SortedBags.immutable.withAll(this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableSortedBag implementation and sorts it using the specified comparator.
+     *
+     * @since 11.0
+     */
+    default ImmutableSortedBag<T> toImmutableSortedBag(Comparator<? super T> comparator)
+    {
+        return SortedBags.immutable.withAll(comparator, this);
+    }
+
+    /**
+     * Converts the collection to an ImmutableSortedBag implementation and sorts it based on the natural order of the
+     * attribute returned by {@code function}.
+     *
+     * @since 11.0
+     */
+    default <V extends Comparable<? super V>> ImmutableSortedBag<T> toImmutableSortedBagBy(Function<? super T, ? extends V> function)
+    {
+        return this.toImmutableSortedBag(Comparator.comparing(function));
+    }
 
     /**
      * Returns a lazy (deferred) iterable, most likely implemented by calling LazyIterate.adapt(this).
@@ -2310,13 +2569,32 @@ public interface RichIterable<T>
             Function0<? extends V> zeroValueFactory,
             Function2<? super V, ? super T, ? extends V> nonMutatingAggregator)
     {
-        MutableMap<K, V> map = Maps.mutable.empty();
+        return this.aggregateBy(
+                groupBy,
+                zeroValueFactory,
+                nonMutatingAggregator,
+                Maps.mutable.empty());
+    }
+
+    /**
+     * Applies an aggregate function over the iterable grouping results into the target map based on the specific
+     * groupBy function. Aggregate results are allowed to be immutable as they will be replaced in place in the map. A
+     * second function specifies the initial "zero" aggregate value to work with (i.e. Integer.valueOf(0)).
+     *
+     * @since 10.3
+     */
+    default <K, V, R extends MutableMapIterable<K, V>> R aggregateBy(
+            Function<? super T, ? extends K> groupBy,
+            Function0<? extends V> zeroValueFactory,
+            Function2<? super V, ? super T, ? extends V> nonMutatingAggregator,
+            R target)
+    {
         this.forEach(each ->
         {
             K key = groupBy.valueOf(each);
-            map.updateValueWith(key, zeroValueFactory, nonMutatingAggregator, each);
+            target.updateValueWith(key, zeroValueFactory, nonMutatingAggregator, each);
         });
-        return map;
+        return target;
     }
 
     /**

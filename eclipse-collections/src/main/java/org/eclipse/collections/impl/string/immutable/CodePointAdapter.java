@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -74,9 +74,8 @@ public class CodePointAdapter
     public static CodePointAdapter from(int... codePoints)
     {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < codePoints.length; i++)
+        for (int codePoint : codePoints)
         {
-            int codePoint = codePoints[i];
             builder.appendCodePoint(codePoint);
         }
         return new CodePointAdapter(builder.toString());
@@ -102,6 +101,12 @@ public class CodePointAdapter
     public int length()
     {
         return this.adapted.length();
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return this.length() == 0;
     }
 
     @Override
@@ -670,9 +675,9 @@ public class CodePointAdapter
                 else
                 {
                     char[] chars = Character.toChars(codePoint);
-                    for (int j = 0; j < chars.length; j++)
+                    for (char aChar : chars)
                     {
-                        appendable.append(chars[j]);
+                        appendable.append(aChar);
                     }
                 }
                 i += Character.charCount(codePoint);

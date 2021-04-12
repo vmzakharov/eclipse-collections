@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -260,7 +260,7 @@ public class UnmodifiableMapEntrySetTest extends UnmodifiableMutableCollectionTe
         {
             Map.Entry<Integer, Integer> entry = iterator.next();
             Assert.assertEquals(ImmutableEntry.of(3 - i, 3 - i), entry);
-            Verify.assertThrows(UnsupportedOperationException.class, () -> entry.setValue(0));
+            Assert.assertThrows(UnsupportedOperationException.class, () -> entry.setValue(0));
         }
     }
 

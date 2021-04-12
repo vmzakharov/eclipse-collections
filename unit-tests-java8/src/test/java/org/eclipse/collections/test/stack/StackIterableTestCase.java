@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -23,8 +23,8 @@ import org.eclipse.collections.impl.factory.Stacks;
 import org.eclipse.collections.test.OrderedIterableWithDuplicatesTestCase;
 import org.junit.Test;
 
-import static org.eclipse.collections.impl.test.Verify.assertThrows;
 import static org.eclipse.collections.test.IterableTestCase.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 public interface StackIterableTestCase extends OrderedIterableWithDuplicatesTestCase, TransformsToStackTrait
@@ -156,7 +156,7 @@ public interface StackIterableTestCase extends OrderedIterableWithDuplicatesTest
     default void StackIterable_peekAt_throws()
     {
         StackIterable<Integer> stackIterable = this.newWith(5, 1, 4, 2, 3);
-        assertThrows(IllegalArgumentException.class, (Runnable) () -> stackIterable.peekAt(-1));
-        assertThrows(IllegalArgumentException.class, (Runnable) () -> stackIterable.peekAt(5));
+        assertThrows(IllegalArgumentException.class, () -> stackIterable.peekAt(-1));
+        assertThrows(IllegalArgumentException.class, () -> stackIterable.peekAt(5));
     }
 }

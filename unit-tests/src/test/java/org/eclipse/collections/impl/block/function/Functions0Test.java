@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -45,7 +45,10 @@ public class Functions0Test
         Verify.assertThrowsWithCause(
                 RuntimeException.class,
                 IOException.class,
-                () -> Functions0.throwing(() -> { throw new IOException(); }).value());
+                () -> Functions0.throwing(() ->
+                {
+                    throw new IOException();
+                }).value());
     }
 
     @Test
@@ -54,24 +57,36 @@ public class Functions0Test
         Verify.assertThrowsWithCause(
                 RuntimeException.class,
                 IOException.class,
-                () -> {
+                () ->
+                {
                     Functions0.throwing(
-                            () -> { throw new IOException(); },
+                            () ->
+                            {
+                                throw new IOException();
+                            },
                             RuntimeException::new).value();
                 });
         Verify.assertThrowsWithCause(
                 MyRuntimeException.class,
                 IOException.class,
-                () -> {
+                () ->
+                {
                     Functions0.throwing(
-                            () -> { throw new IOException(); },
+                            () ->
+                            {
+                                throw new IOException();
+                            },
                             this::throwMyException).value();
                 });
-        Verify.assertThrows(
+        Assert.assertThrows(
                 NullPointerException.class,
-                () -> {
+                () ->
+                {
                     Functions0.throwing(
-                            () -> { throw new NullPointerException(); },
+                            () ->
+                            {
+                                throw new NullPointerException();
+                            },
                             this::throwMyException).value();
                 });
     }

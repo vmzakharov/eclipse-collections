@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -62,7 +62,7 @@ public class ImmutableBooleanSingletonStackTest extends AbstractImmutableBoolean
         Assert.assertTrue(this.classUnderTest().peek());
         Assert.assertEquals(BooleanArrayList.newListWith(), this.classUnderTest().peek(0));
         Assert.assertEquals(BooleanArrayList.newListWith(true), this.classUnderTest().peek(1));
-        Verify.assertThrows(IllegalArgumentException.class, () -> this.classUnderTest().peek(2));
+        Assert.assertThrows(IllegalArgumentException.class, () -> this.classUnderTest().peek(2));
     }
 
     @Override

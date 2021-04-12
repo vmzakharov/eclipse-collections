@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -49,6 +49,7 @@ import org.eclipse.collections.api.block.function.primitive.ShortFunction;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.predicate.primitive.IntPredicate;
+import org.eclipse.collections.api.block.predicate.primitive.ObjectIntPredicate;
 import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
@@ -128,6 +129,30 @@ final class ImmutableEmptyBag<T>
     @Override
     public void forEachWithOccurrences(ObjectIntProcedure<? super T> objectIntProcedure)
     {
+    }
+
+    @Override
+    public boolean anySatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean allSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean noneSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return true;
+    }
+
+    @Override
+    public T detectWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return null;
     }
 
     @Override

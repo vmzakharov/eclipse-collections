@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -57,6 +57,8 @@ import org.junit.Test;
  */
 public class VerifyTest
 {
+    private static final String ASSERT_FAIL = "org.junit.Assert.fail";
+
     @Test
     public void assertThrowsWithCause()
     {
@@ -99,85 +101,6 @@ public class VerifyTest
     {
         Verify.assertEndsWith(FastList.newListWith(1, 2, 3, 4), 3, 4);
         Verify.assertError(AssertionError.class, () -> Verify.assertEndsWith(FastList.newListWith(1, 2, 3, 4), 3, 2));
-    }
-
-    @Test
-    public void assertNotEqualsString()
-    {
-        Verify.assertNotEquals("yes", "no");
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("yes", "yes"));
-    }
-
-    @Test
-    public void assertNotEqualsDouble()
-    {
-        Verify.assertNotEquals(0.5d, 0.6d, 0.0001);
-        Verify.assertNotEquals("message", 0.5d, 0.6d, 0.0001);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals(0.5d, 0.5d, 0.0001));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", 0.5d, 0.5d, 0.0001));
-    }
-
-    @Test
-    public void assertNotEqualsFloat()
-    {
-        Verify.assertNotEquals(0.5f, 0.6f, 0.0001f);
-        Verify.assertNotEquals("message", 0.5f, 0.6f, 0.0001f);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals(0.5f, 0.5f, 0.0001f));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", 0.5f, 0.5f, 0.0001f));
-    }
-
-    @Test
-    public void assertNotEqualsLong()
-    {
-        Verify.assertNotEquals(5L, 6L);
-        Verify.assertNotEquals("message", 5L, 6L);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals(5L, 5L));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", 5L, 5L));
-    }
-
-    @Test
-    public void assertNotEqualsBoolean()
-    {
-        Verify.assertNotEquals(true, false);
-        Verify.assertNotEquals("message", true, false);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals(true, true));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", true, true));
-    }
-
-    @Test
-    public void assertNotEqualsByte()
-    {
-        Verify.assertNotEquals((byte) 1, (byte) 2);
-        Verify.assertNotEquals("message", (byte) 1, (byte) 2);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals((byte) 1, (byte) 1));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", (byte) 1, (byte) 1));
-    }
-
-    @Test
-    public void assertNotEqualsChar()
-    {
-        Verify.assertNotEquals((char) 1, (char) 2);
-        Verify.assertNotEquals("message", (char) 1, (char) 2);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals((char) 1, (char) 1));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", (char) 1, (byte) 1));
-    }
-
-    @Test
-    public void assertNotEqualsShort()
-    {
-        Verify.assertNotEquals((short) 1, (short) 2);
-        Verify.assertNotEquals("message", (short) 1, (short) 2);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals((short) 1, (short) 1));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", (short) 1, (short) 1));
-    }
-
-    @Test
-    public void assertNotEqualsInt()
-    {
-        Verify.assertNotEquals(1, 2);
-        Verify.assertNotEquals("message", 1, 2);
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals(1, 1));
-        Verify.assertError(AssertionError.class, () -> Verify.assertNotEquals("message", 1, 1));
     }
 
     @Test
@@ -446,54 +369,6 @@ public class VerifyTest
         public int hashCode()
         {
             return 0;
-        }
-    }
-
-    @Test
-    public void assertNotEquals()
-    {
-        Object object = new Object()
-        {
-            @Override
-            public boolean equals(Object obj)
-            {
-                return false;
-            }
-        };
-
-        Verify.assertNotEquals(object, object);
-    }
-
-    @Test
-    public void assertNotEqualsFailsOnSameReference()
-    {
-        try
-        {
-            Object object = new Object();
-            Verify.assertNotEquals(object, object);
-            Assert.fail("AssertionError expected");
-        }
-        catch (AssertionError e)
-        {
-            Verify.assertContains(VerifyTest.class.getName(), e.getStackTrace()[0].toString());
-        }
-    }
-
-    @Test
-    public void assertNotEqualsFailsOnDifferentReference()
-    {
-        try
-        {
-            //noinspection CachedNumberConstructorCall,UnnecessaryBoxing
-            Integer integer1 = new Integer(12345);
-            //noinspection CachedNumberConstructorCall,UnnecessaryBoxing
-            Integer integer2 = new Integer(12345);
-            Verify.assertNotEquals(integer1, integer2);
-            Assert.fail("AssertionError expected");
-        }
-        catch (AssertionError e)
-        {
-            Verify.assertContains(VerifyTest.class.getName(), e.getStackTrace()[0].toString());
         }
     }
 
@@ -854,7 +729,7 @@ public class VerifyTest
         }
         catch (AssertionError ex)
         {
-            Verify.assertContains("items should not be equal", ex.getMessage());
+            Verify.assertContains("items", ex.getMessage());
             Verify.assertContains(VerifyTest.class.getName(), ex.getStackTrace()[0].toString());
         }
     }

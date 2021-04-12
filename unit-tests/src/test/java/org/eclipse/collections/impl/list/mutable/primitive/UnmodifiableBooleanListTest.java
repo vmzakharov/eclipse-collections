@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -12,7 +12,6 @@ package org.eclipse.collections.impl.list.mutable.primitive;
 
 import org.eclipse.collections.api.iterator.MutableBooleanIterator;
 import org.eclipse.collections.api.list.primitive.MutableBooleanList;
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -291,7 +290,7 @@ public class UnmodifiableBooleanListTest extends AbstractBooleanListTestCase
         MutableBooleanIterator booleanIterator = this.classUnderTest().booleanIterator();
         Assert.assertTrue(booleanIterator.hasNext());
         booleanIterator.next();
-        Verify.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
     }
 
     @Override
@@ -300,7 +299,7 @@ public class UnmodifiableBooleanListTest extends AbstractBooleanListTestCase
     {
         MutableBooleanIterator booleanIterator = this.classUnderTest().booleanIterator();
         Assert.assertTrue(booleanIterator.hasNext());
-        Verify.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, booleanIterator::remove);
     }
 
     @Override

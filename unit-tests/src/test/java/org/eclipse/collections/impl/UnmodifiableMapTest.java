@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -42,7 +42,7 @@ public class UnmodifiableMapTest
     @Test
     public void testNullConstructorArgument()
     {
-        Verify.assertThrows(NullPointerException.class, () -> new UnmodifiableMap<>(null));
+        Assert.assertThrows(NullPointerException.class, () -> new UnmodifiableMap<>(null));
     }
 
     @Test
@@ -78,25 +78,25 @@ public class UnmodifiableMapTest
     @Test
     public void testPut()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.put("foo", Lists.mutable.of()));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.put("foo", Lists.mutable.of()));
     }
 
     @Test
     public void testRemove()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.remove(ROCK_OUT));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.remove(ROCK_OUT));
     }
 
     @Test
     public void testPutAll()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.putAll(Maps.mutable.of()));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.unmodifiableMap.putAll(Maps.mutable.of()));
     }
 
     @Test
     public void testClear()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, this.unmodifiableMap::clear);
+        Assert.assertThrows(UnsupportedOperationException.class, this.unmodifiableMap::clear);
     }
 
     @Test

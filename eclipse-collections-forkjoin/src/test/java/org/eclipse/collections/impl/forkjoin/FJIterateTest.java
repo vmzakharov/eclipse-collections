@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -265,7 +265,7 @@ public class FJIterateTest
     @Test
     public void testForEachWithException()
     {
-        Verify.assertThrows(RuntimeException.class, () -> FJIterate.forEach(
+        Assert.assertThrows(RuntimeException.class, () -> FJIterate.forEach(
                 FJIterateTest.createIntegerList(5),
                 new PassThruProcedureFactory<>(EXCEPTION_PROCEDURE),
                 new PassThruCombiner<>(),
@@ -326,7 +326,7 @@ public class FJIterateTest
     @Test
     public void testForEachWithIndexException()
     {
-        Verify.assertThrows(RuntimeException.class, () -> FJIterate.forEachWithIndex(
+        Assert.assertThrows(RuntimeException.class, () -> FJIterate.forEachWithIndex(
                 FJIterateTest.createIntegerList(5),
                 new PassThruObjectIntProcedureFactory<>(EXCEPTION_OBJECT_INT_PROCEDURE),
                 new PassThruCombiner<>(),
@@ -490,7 +490,7 @@ public class FJIterateTest
         Assert.assertEquals(expected, HashBagMultimap.newMultimap(result7));
         Assert.assertEquals(expected, HashBagMultimap.newMultimap(result8));
         Assert.assertEquals(expected, HashBagMultimap.newMultimap(result9));
-        Verify.assertThrows(IllegalArgumentException.class, () -> FJIterate.groupBy(null, null, 1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> FJIterate.groupBy(null, null, 1));
     }
 
     @Test

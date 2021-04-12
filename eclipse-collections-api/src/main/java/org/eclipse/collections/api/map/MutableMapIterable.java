@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -94,6 +94,12 @@ public interface MutableMapIterable<K, V> extends MapIterable<K, V>, Map<K, V>
         return this.entrySet().removeIf(entry -> predicate.accept(entry.getKey(), entry.getValue()));
     }
 
+    @Override
+    default V getOrDefault(Object key, V defaultValue)
+    {
+        return this.getIfAbsentValue((K) key, defaultValue);
+    }
+
     /**
      * Get and return the value in the Map at the specified key. Alternatively, if there is no value in the map at the key,
      * return the result of evaluating the specified Function0, and put that value in the map at the specified key.
@@ -164,6 +170,17 @@ public interface MutableMapIterable<K, V> extends MapIterable<K, V>, Map<K, V>
     {
         this.putAll(map);
         return this;
+    }
+
+    default MutableMapIterable<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        this.putAllMapIterable(mapIterable);
+        return this;
+    }
+
+    default void putAllMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        mapIterable.forEachKeyValue(this::put);
     }
 
     /**
@@ -388,19 +405,32 @@ public interface MutableMapIterable<K, V> extends MapIterable<K, V>, Map<K, V>
         return map;
     }
 
-    // TODO: Return MutableMapIterable
     @Override
-    default <KK, VV> MutableMap<KK, VV> aggregateBy(
+    default <KK, VV> MutableMapIterable<KK, VV> aggregateBy(
             Function<? super V, ? extends KK> groupBy,
             Function0<? extends VV> zeroValueFactory,
             Function2<? super VV, ? super V, ? extends VV> nonMutatingAggregator)
     {
-        MutableMap<KK, VV> map = Maps.mutable.empty();
-        this.forEach(each ->
-        {
-            KK key = groupBy.valueOf(each);
-            map.updateValueWith(key, zeroValueFactory, nonMutatingAggregator, each);
-        });
+        return this.aggregateBy(
+                groupBy,
+                zeroValueFactory,
+                nonMutatingAggregator,
+                Maps.mutable.empty());
+    }
+
+    @Override
+    default <K1, V1, V2> MutableMapIterable<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        MutableMap<K1, V2> map = Maps.mutable.empty();
+        this.forEachKeyValue((key, value) -> map.updateValueWith(
+                keyFunction.valueOf(key),
+                zeroValueFactory,
+                nonMutatingAggregator,
+                valueFunction.valueOf(value)));
         return map;
     }
 }

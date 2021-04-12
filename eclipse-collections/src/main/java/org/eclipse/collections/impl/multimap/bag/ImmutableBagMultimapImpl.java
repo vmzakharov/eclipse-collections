@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -16,6 +16,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.block.function.Function;
@@ -196,13 +197,13 @@ public final class ImmutableBagMultimapImpl<K, V>
     }
 
     @Override
-    public ImmutableBagMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public ImmutableBagMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.selectKeysMultiValues(predicate, HashBagMultimap.newMultimap()).toImmutable();
     }
 
     @Override
-    public ImmutableBagMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public ImmutableBagMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         return this.rejectKeysMultiValues(predicate, HashBagMultimap.newMultimap()).toImmutable();
     }

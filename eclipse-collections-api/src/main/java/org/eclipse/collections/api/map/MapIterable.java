@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -24,6 +24,7 @@ import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.block.procedure.Procedure2;
+import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.multimap.Multimap;
 import org.eclipse.collections.api.tuple.Pair;
 
@@ -107,6 +108,11 @@ public interface MapIterable<K, V> extends RichIterable<V>
      * @since 5.0
      */
     MapIterable<V, K> flipUniqueValues();
+
+    default V getOrDefault(Object key, V defaultValue)
+    {
+        return this.getIfAbsentValue((K) key, defaultValue);
+    }
 
     /**
      * Return the value in the Map that corresponds to the specified key, or if there is no value at the key, return the
@@ -283,5 +289,46 @@ public interface MapIterable<K, V> extends RichIterable<V>
     default Spliterator<V> spliterator()
     {
         return Spliterators.spliterator(this.iterator(), (long) this.size(), 0);
+    }
+
+    /**
+     * Applies an aggregate function over the map grouping results into a map based on the specific key and value groupBy functions.
+     * Aggregate results are allowed to be immutable as they will be replaced in place in the map. A second function
+     * specifies the initial "zero" aggregate value to work with.
+     *
+     * <pre>
+     * MapIterable&lt;String, Interval&gt; map = Maps.mutable.with("oneToFive", Interval.fromTo(1, 5), "sixToNine", Interval.fromTo(6, 9));
+     *
+     * MapIterable&lt;String, Long&gt; result = map.aggregateBy(
+     *         eachKey -&gt; {
+     *             return eachKey.equals("oneToFive")  ? "lessThanSix" : "greaterOrEqualsToSix";
+     *         },
+     *         each -&gt; each.sumOfInt(Integer::intValue),
+     *         () -&gt; 0L,
+     *         (argument1, argument2) -&gt; argument1 + argument2);
+     *
+     * MapIterable&lt;String, Long&gt; expected =
+     *         Maps.mutable.with("lessThanSix", Interval.fromTo(1, 5).sumOfInt(Integer::intValue),
+     *                 "greaterOrEqualsToSix", Interval.fromTo(6, 9).sumOfInt(Integer::intValue));
+     * Assert.assertEquals(expected, result);
+     * </pre>
+     *
+     * @since 10.3.0
+     */
+    default <K1, V1, V2> MapIterable<K1, V2> aggregateBy(
+            Function<? super K, ? extends K1> keyFunction,
+            Function<? super V, ? extends V1> valueFunction,
+            Function0<? extends V2> zeroValueFactory,
+            Function2<? super V2, ? super V1, ? extends V2> nonMutatingAggregator)
+    {
+        MutableMap<K1, V2> map = Maps.mutable.empty();
+        this.forEachKeyValue((key, value) -> {
+            map.updateValueWith(
+                    keyFunction.valueOf(key),
+                    zeroValueFactory,
+                    nonMutatingAggregator,
+                    valueFunction.valueOf(value));
+        });
+        return map;
     }
 }

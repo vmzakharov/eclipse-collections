@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -66,11 +66,12 @@ public class ParallelArrayIterateTest
     @Test
     public void parallelForEachException()
     {
-        Verify.assertThrows(
+        Assert.assertThrows(
                 RuntimeException.class,
                 () -> ParallelArrayIterate.forEach(
                         Interval.zeroTo(5).toArray(),
-                        new PassThruProcedureFactory<Procedure<Object>>(object -> {
+                        new PassThruProcedureFactory<Procedure<Object>>(object ->
+                        {
                             throw new RuntimeException("Thread death on its way!");
                         }),
                         new PassThruCombiner<>(),

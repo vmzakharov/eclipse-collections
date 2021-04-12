@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Shotaro Sano and others.
+ * Copyright (c) 2021 Shotaro Sano and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -13,6 +13,7 @@ package org.eclipse.collections.impl.multimap.set.sorted;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.block.function.Function2;
 import org.eclipse.collections.api.block.predicate.Predicate2;
@@ -168,7 +169,7 @@ public class SynchronizedSortedSetMultimap<K, V>
     }
 
     @Override
-    public MutableSortedSetMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public MutableSortedSetMultimap<K, V> selectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         synchronized (this.getLock())
         {
@@ -177,7 +178,7 @@ public class SynchronizedSortedSetMultimap<K, V>
     }
 
     @Override
-    public MutableSortedSetMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super Iterable<V>> predicate)
+    public MutableSortedSetMultimap<K, V> rejectKeysMultiValues(Predicate2<? super K, ? super RichIterable<V>> predicate)
     {
         synchronized (this.getLock())
         {

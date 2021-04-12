@@ -38,12 +38,14 @@ import org.eclipse.collections.api.iterator.<name>Iterator;
 import org.eclipse.collections.api.list.primitive.Mutable<name>List;
 import org.eclipse.collections.impl.bag.mutable.primitive.<name>HashBag;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.iterator.Unmodifiable<name>Iterator;
-import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.iterator.Singleton<name>Iterator;
 import org.eclipse.collections.impl.set.mutable.primitive.<name>HashSet;
 import org.eclipse.collections.impl.factory.primitive.<name>Sets;
 import org.eclipse.collections.impl.lazy.primitive.Lazy<name>IterableAdapter;
 import org.eclipse.collections.impl.list.mutable.primitive.<name>ArrayList;
+import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.tuple.primitive.<name><name>Pair;
 
 /**
  * Immutable<name>SingletonSet is an optimization for {@link Immutable<name>Set} of size 1.
@@ -168,7 +170,7 @@ final class Immutable<name>SingletonSet implements Immutable<name>Set, Serializa
     @Override
     public \<V> ImmutableSet\<V> collect(<name>ToObjectFunction\<? extends V> function)
     {
-        return UnifiedSet.\<V>newSetWith(function.valueOf(this.element)).toImmutable();
+        return Sets.immutable.with(function.valueOf(this.element));
     }
 
     @Override
@@ -371,7 +373,7 @@ final class Immutable<name>SingletonSet implements Immutable<name>Set, Serializa
     @Override
     public <name>Iterator <type>Iterator()
     {
-        return new Unmodifiable<name>Iterator(<name>HashSet.newSetWith(this.element).<type>Iterator());
+        return new Singleton<name>Iterator(element);
     }
 }
 
@@ -429,6 +431,12 @@ public double average()
 public double median()
 {
     return this.element;
+}
+
+@Override
+public LazyIterable\<<name><name>Pair> cartesianProduct(<name>Set set)
+{
+    return <name>Sets.cartesianProduct(this, set);
 }
 
 @Override

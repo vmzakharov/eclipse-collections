@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -75,8 +75,11 @@ public class ImmutableSortedBagFactoryImpl implements ImmutableSortedBagFactory
         {
             return (ImmutableSortedBag<T>) items;
         }
-
-        return this.of((T[]) Iterate.toArray(items));
+        if (Iterate.isEmpty(items))
+        {
+            return this.empty();
+        }
+        return new ImmutableSortedBagImpl<>(TreeBag.newBag(items));
     }
 
     @Override
@@ -120,7 +123,11 @@ public class ImmutableSortedBagFactoryImpl implements ImmutableSortedBagFactory
     @Override
     public <T> ImmutableSortedBag<T> withAll(Comparator<? super T> comparator, Iterable<? extends T> items)
     {
-        return this.of(comparator, (T[]) Iterate.toArray(items));
+        if (Iterate.isEmpty(items))
+        {
+            return this.of(comparator);
+        }
+        return new ImmutableSortedBagImpl<>(TreeBag.newBag(comparator, items));
     }
 
     @Override

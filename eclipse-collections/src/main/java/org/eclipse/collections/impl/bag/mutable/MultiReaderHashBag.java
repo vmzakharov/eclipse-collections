@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -19,8 +19,16 @@ import java.util.Iterator;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.ImmutableBag;
 import org.eclipse.collections.api.bag.MultiReaderBag;
 import org.eclipse.collections.api.bag.MutableBag;
@@ -46,6 +54,7 @@ import org.eclipse.collections.api.block.function.primitive.ShortFunction;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.predicate.primitive.IntPredicate;
+import org.eclipse.collections.api.block.predicate.primitive.ObjectIntPredicate;
 import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
 import org.eclipse.collections.api.collection.primitive.MutableBooleanCollection;
@@ -59,6 +68,7 @@ import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
 import org.eclipse.collections.api.factory.Bags;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.primitive.MutableObjectLongMap;
 import org.eclipse.collections.api.multimap.bag.MutableBagMultimap;
 import org.eclipse.collections.api.ordered.OrderedIterable;
 import org.eclipse.collections.api.partition.bag.PartitionMutableBag;
@@ -67,6 +77,7 @@ import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
 import org.eclipse.collections.impl.collection.mutable.AbstractMultiReaderMutableCollection;
 import org.eclipse.collections.impl.factory.Iterables;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectLongHashMap;
 import org.eclipse.collections.impl.utility.LazyIterate;
 
 /**
@@ -562,6 +573,62 @@ public final class MultiReaderHashBag<T>
     }
 
     @Override
+    public boolean anySatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.delegate.anySatisfyWithOccurrences(predicate);
+        }
+    }
+
+    @Override
+    public boolean allSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.delegate.allSatisfyWithOccurrences(predicate);
+        }
+    }
+
+    @Override
+    public boolean noneSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.delegate.noneSatisfyWithOccurrences(predicate);
+        }
+    }
+
+    @Override
+    public T detectWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
+        {
+            return this.delegate.detectWithOccurrences(predicate);
+        }
+    }
+
+    @Override
+    public <V> MutableObjectLongMap<V> sumByInt(Function<? super T, ? extends V> groupBy, IntFunction<? super T> function)
+    {
+        MutableObjectLongMap<V> result = ObjectLongHashMap.newMap();
+        this.forEachWithOccurrences((each, occurrences) -> result.addToValue(
+                groupBy.valueOf(each),
+                function.intValueOf(each) * (long) occurrences));
+        return result;
+    }
+
+    @Override
+    public <V> MutableObjectLongMap<V> sumByLong(Function<? super T, ? extends V> groupBy, LongFunction<? super T> function)
+    {
+        MutableObjectLongMap<V> result = ObjectLongHashMap.newMap();
+        this.forEachWithOccurrences((each, occurrences) -> result.addToValue(
+                groupBy.valueOf(each),
+                function.longValueOf(each) * (long) occurrences));
+        return result;
+    }
+
+    @Override
     public void forEachWithOccurrences(ObjectIntProcedure<? super T> procedure)
     {
         try (LockWrapper wrapper = this.lockWrapper.acquireReadLock())
@@ -733,9 +800,40 @@ public final class MultiReaderHashBag<T>
         }
 
         @Override
+        public boolean anySatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+        {
+            return this.getDelegate().anySatisfyWithOccurrences(predicate);
+        }
+
+        @Override
+        public boolean allSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+        {
+            return this.getDelegate().allSatisfyWithOccurrences(predicate);
+        }
+
+        @Override
+        public boolean noneSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+        {
+            return this.getDelegate().noneSatisfyWithOccurrences(predicate);
+        }
+
+        @Override
+        public T detectWithOccurrences(ObjectIntPredicate<? super T> predicate)
+        {
+            return this.getDelegate().detectWithOccurrences(predicate);
+        }
+
+        @Override
         public <R extends MutableBooleanCollection> R collectBoolean(BooleanFunction<? super T> booleanFunction, R target)
         {
             return this.getDelegate().collectBoolean(booleanFunction, target);
+        }
+
+        @Override
+        public <R extends MutableBooleanCollection> R flatCollectBoolean(
+                Function<? super T, ? extends BooleanIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectBoolean(function, target);
         }
 
         @Override
@@ -751,6 +849,13 @@ public final class MultiReaderHashBag<T>
         }
 
         @Override
+        public <R extends MutableByteCollection> R flatCollectByte(
+                Function<? super T, ? extends ByteIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectByte(function, target);
+        }
+
+        @Override
         public MutableCharBag collectChar(CharFunction<? super T> charFunction)
         {
             return this.getDelegate().collectChar(charFunction);
@@ -760,6 +865,13 @@ public final class MultiReaderHashBag<T>
         public <R extends MutableCharCollection> R collectChar(CharFunction<? super T> charFunction, R target)
         {
             return this.getDelegate().collectChar(charFunction, target);
+        }
+
+        @Override
+        public <R extends MutableCharCollection> R flatCollectChar(
+                Function<? super T, ? extends CharIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectChar(function, target);
         }
 
         @Override
@@ -775,6 +887,13 @@ public final class MultiReaderHashBag<T>
         }
 
         @Override
+        public <R extends MutableDoubleCollection> R flatCollectDouble(
+                Function<? super T, ? extends DoubleIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectDouble(function, target);
+        }
+
+        @Override
         public MutableFloatBag collectFloat(FloatFunction<? super T> floatFunction)
         {
             return this.getDelegate().collectFloat(floatFunction);
@@ -784,6 +903,13 @@ public final class MultiReaderHashBag<T>
         public <R extends MutableFloatCollection> R collectFloat(FloatFunction<? super T> floatFunction, R target)
         {
             return this.getDelegate().collectFloat(floatFunction, target);
+        }
+
+        @Override
+        public <R extends MutableFloatCollection> R flatCollectFloat(
+                Function<? super T, ? extends FloatIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectFloat(function, target);
         }
 
         @Override
@@ -799,6 +925,13 @@ public final class MultiReaderHashBag<T>
         }
 
         @Override
+        public <R extends MutableIntCollection> R flatCollectInt(
+                Function<? super T, ? extends IntIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectInt(function, target);
+        }
+
+        @Override
         public MutableLongBag collectLong(LongFunction<? super T> longFunction)
         {
             return this.getDelegate().collectLong(longFunction);
@@ -811,6 +944,13 @@ public final class MultiReaderHashBag<T>
         }
 
         @Override
+        public <R extends MutableLongCollection> R flatCollectLong(
+                Function<? super T, ? extends LongIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectLong(function, target);
+        }
+
+        @Override
         public MutableShortBag collectShort(ShortFunction<? super T> shortFunction)
         {
             return this.getDelegate().collectShort(shortFunction);
@@ -820,6 +960,13 @@ public final class MultiReaderHashBag<T>
         public <R extends MutableShortCollection> R collectShort(ShortFunction<? super T> shortFunction, R target)
         {
             return this.getDelegate().collectShort(shortFunction, target);
+        }
+
+        @Override
+        public <R extends MutableShortCollection> R flatCollectShort(
+                Function<? super T, ? extends ShortIterable> function, R target)
+        {
+            return this.getDelegate().flatCollectShort(function, target);
         }
 
         @Override

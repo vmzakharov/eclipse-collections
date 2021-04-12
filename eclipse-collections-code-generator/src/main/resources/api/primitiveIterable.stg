@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 <(wideStatisticsImport.(type))>
 
+<(comparatorImports.(type))(type)>
 import org.eclipse.collections.api.bag.primitive.Mutable<name>Bag;
 import org.eclipse.collections.api.block.function.primitive.<(wideName.(type))><name>To<(wideName.(type))>Function;
 import org.eclipse.collections.api.block.function.primitive.<name>ToBooleanFunction;
@@ -42,6 +43,7 @@ import org.eclipse.collections.api.collection.primitive.MutableLongCollection;
 import org.eclipse.collections.api.collection.primitive.MutableShortCollection;
 import org.eclipse.collections.api.iterator.<name>Iterator;
 import org.eclipse.collections.api.list.primitive.Mutable<name>List;
+import org.eclipse.collections.api.set.primitive.<name>Set;
 import org.eclipse.collections.api.set.primitive.Mutable<name>Set;
 
 /**
@@ -79,16 +81,154 @@ public interface <name>Iterable extends PrimitiveIterable
     boolean contains(<type> value);
 
     /**
-     * Returns true if the all of the values specified in the source array are contained
+     * Returns true if all of the values specified in the source array are contained
      * in the <name>Iterable, and false if they are not.
      */
-    boolean containsAll(<type>... source);
+    default boolean containsAll(<type>... source)
+    {
+        if (this.size() \<= 32 || source.length \< 4)
+        {
+            for (<type> item : source)
+            {
+                if (!this.contains(item))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            <name>Set set = this instanceof <name>Set ? (<name>Set) this : this.toSet();
+            for (<type> item : source)
+            {
+                if (!set.contains(item))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 
     /**
-     * Returns true if the all of the values specified in the source <name>Iterable are contained
+     * Returns true if all of the values specified in the source <name>Iterable are contained
      * in the <name>Iterable, and false if they are not.
      */
-    boolean containsAll(<name>Iterable source);
+    default boolean containsAll(<name>Iterable source)
+    {
+        if (this.size() \<= 32 || source.size() \< 4)
+        {
+            return source.allSatisfy(this::contains);
+        }
+        else
+        {
+            <name>Set set = this instanceof <name>Set ? (<name>Set) this : this.toSet();
+            return source.allSatisfy(set::contains);
+        }
+    }
+
+    /**
+     * Returns true if any of the values specified in the source array are contained
+     * in the <name>Iterable, and false if they are not.
+     *
+     * @since 11.0
+     */
+    default boolean containsAny(<type>... source)
+    {
+        <name>Iterable inside = this;
+        if (this.size() > 32 && source.length > 32 && !(this instanceof <name>Set))
+        {
+            inside = this.toSet();
+        }
+        for (int i = 0; i \< source.length; i++)
+        {
+            if (inside.contains(source[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if any of the values specified in the source <name>Iterable are contained
+     * in the <name>Iterable, and false if they are not.
+     *
+     * @since 11.0
+     */
+    default boolean containsAny(<name>Iterable source)
+    {
+        <name>Iterable outside = this;
+        <name>Iterable inside = source;
+        if (this.size() \< source.size())
+        {
+            outside = source;
+            inside = this;
+        }
+        if (outside instanceof <name>Set)
+        {
+            <name>Iterable temp = outside;
+            outside = inside;
+            inside = temp;
+        }
+        else if (inside.size() > 32 && !(inside instanceof <name>Set))
+        {
+            inside = inside.toSet();
+        }
+        return outside.anySatisfy(inside::contains);
+    }
+
+    /**
+     * Returns true if none of the values specified in the source array are contained
+     * in the <name>Iterable, and false if they are.
+     *
+     * @since 11.0
+     */
+    default boolean containsNone(<type>... source)
+    {
+        <name>Iterable inside = this;
+        if (this.size() > 32 && source.length > 32 && !(this instanceof <name>Set))
+        {
+            inside = this.toSet();
+        }
+        for (int i = 0; i \< source.length; i++)
+        {
+            if (inside.contains(source[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if none of the values specified in the source <name>Iterable are contained
+     * in the <name>Iterable, and false if they are.
+     *
+     * @since 11.0
+     */
+    default boolean containsNone(<name>Iterable source)
+    {
+        <name>Iterable outside = this;
+        <name>Iterable inside = source;
+        if (this.size() \< source.size())
+        {
+            outside = source;
+            inside = this;
+        }
+        if (outside instanceof <name>Set)
+        {
+            <name>Iterable temp = outside;
+            outside = inside;
+            inside = temp;
+        }
+        else if (inside.size() > 32 && !(inside instanceof <name>Set))
+        {
+            inside = inside.toSet();
+        }
+        return outside.noneSatisfy(inside::contains);
+    }
 
     /**
      * Applies the <name>Procedure to each element in the <name>Iterable.
@@ -474,6 +614,32 @@ default double medianIfEmpty(double defaultValue)
 <type>[] toSortedArray();
 
 Mutable<name>List toSortedList();
+
+/**
+ * Converts the collection to a Mutable<name>List implementation sorted using the provided comparator.
+ */
+default Mutable<name>List toSortedList(<name>Comparator comparator)
+{
+    return this.toList().sortThis(comparator);
+}
+
+/**
+ * Converts the collection to a Mutable<name>ListImplementation sorted based on the natural order of the key returned
+ * by {@code function}.
+ */
+default \<T> Mutable<name>List toSortedListBy(<name>ToObjectFunction\<T> function)
+{
+    return this.toList().sortThisBy(function);
+}
+
+/**
+ * Converts the collection to a Mutable<name>List implementation, which is sorted based on the key returned by
+ * {@code function} using the provided {@code comparator}.
+ */
+default \<T> Mutable<name>List toSortedListBy(<name>ToObjectFunction\<T> function, Comparator\<? super T> comparator)
+{
+    return this.toList().sortThisBy(function, comparator);
+}
 >>
 
 noMethods() ::= ""
@@ -500,3 +666,22 @@ wideStatisticsImport ::= [
     "double": "import java.util.DoubleSummaryStatistics;",
     default: "no matching wide type"
 ]
+
+comparatorImports ::= [
+    "byte": "allComparatorImports",
+    "short": "allComparatorImports",
+    "char": "allComparatorImports",
+    "int": "allComparatorImports",
+    "long": "allComparatorImports",
+    "float": "allComparatorImports",
+    "double": "allComparatorImports",
+    "boolean": "noComparatorImports"
+]
+
+allComparatorImports(type) ::= <<
+import java.util.Comparator;
+import org.eclipse.collections.api.block.comparator.primitive.<name>Comparator;
+
+>>
+
+noComparatorImports(type) ::= ""

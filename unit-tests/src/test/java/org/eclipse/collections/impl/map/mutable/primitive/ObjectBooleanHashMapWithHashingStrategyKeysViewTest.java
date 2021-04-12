@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -19,7 +19,6 @@ import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.block.factory.HashingStrategies;
 import org.eclipse.collections.impl.lazy.AbstractLazyIterableTestCase;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 
 /**
@@ -60,7 +59,7 @@ public class ObjectBooleanHashMapWithHashingStrategyKeysViewTest extends Abstrac
         Iterator<String> iterator = ObjectBooleanHashMapWithHashingStrategy.newWithKeysValues(STRING_HASHING_STRATEGY, "zero", true, "thirtyOne", false, "thirtyTwo", true).keysView().iterator();
         Assert.assertTrue(iterator.hasNext());
         actual.add(iterator.next());
-        Verify.assertThrows(UnsupportedOperationException.class, iterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator::remove);
         Assert.assertTrue(iterator.hasNext());
         actual.add(iterator.next());
         Assert.assertTrue(iterator.hasNext());
@@ -68,6 +67,6 @@ public class ObjectBooleanHashMapWithHashingStrategyKeysViewTest extends Abstrac
         Assert.assertFalse(iterator.hasNext());
 
         Assert.assertEquals(expected, actual);
-        Verify.assertThrows(NoSuchElementException.class, (Runnable) iterator::next);
+        Assert.assertThrows(NoSuchElementException.class, iterator::next);
     }
 }

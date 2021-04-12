@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -170,6 +170,13 @@ public interface MutableOrderedMap<K, V> extends OrderedMap<K, V>, MutableMapIte
     default MutableOrderedMap<K, V> withMap(Map<? extends K, ? extends V> map)
     {
         this.putAll(map);
+        return this;
+    }
+
+    @Override
+    default MutableOrderedMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        this.putAllMapIterable(mapIterable);
         return this;
     }
 

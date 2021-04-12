@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2018 Goldman Sachs and others.
+  ~ Copyright (c) 2021 Goldman Sachs and others.
   ~ All rights reserved. This program and the accompanying materials
   ~ are made available under the terms of the Eclipse Public License v1.0
   ~ and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -18,7 +18,7 @@
 
     <groupId>org.eclipse.collections</groupId>
     <artifactId>eclipse-collections-parent</artifactId>
-    <version>10.3.0-SNAPSHOT</version>
+    <version>11.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -58,8 +58,8 @@
     </issueManagement>
 
     <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/eclipse/eclipse-collections</url>
+        <system>GitHub Actions</system>
+        <url>https://github.com/eclipse/eclipse-collections/actions</url>
     </ciManagement>
 
     <mailingLists>
@@ -75,27 +75,26 @@
     <developers>
         <developer>
             <name>Craig P. Motlin</name>
-            <email>craig.motlin@gs.com</email>
         </developer>
 
         <developer>
             <name>Donald Raab</name>
-            <email>donraab@gmail.com</email>
         </developer>
 
         <developer>
             <name>Mohammad A. Rezaei</name>
-            <email>mohammad.rezaei@gs.com</email>
         </developer>
 
         <developer>
             <name>Hiroshi Ito</name>
-            <email>itohro@gmail.com</email>
         </developer>
 
         <developer>
             <name>Nikhil J. Nanivadekar</name>
-            <email>nikhil.nanivadekar@gs.com</email>
+        </developer>
+
+        <developer>
+            <name>Sirisha Pratha</name>
         </developer>
     </developers>
 
@@ -123,10 +122,11 @@
         <scala.version>2.12.6</scala.version>
         <guava.version>28.2-jre</guava.version>
         <trove4j.version>3.0.3</trove4j.version>
-        <checkstyle.version>8.29</checkstyle.version>
+        <checkstyle.version>8.34</checkstyle.version>
         <checkstyle.plugin.version>3.1.1</checkstyle.plugin.version>
         <findbugs.plugin.version>3.0.5</findbugs.plugin.version>
         <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
+        <junit.version>4.13.1</junit.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -167,7 +167,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -204,10 +204,85 @@
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>eu.stamp-project</groupId>
+                    <artifactId>pitmp-maven-plugin</artifactId>
+                    <version>1.3.7</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                        <timestampedReports>false</timestampedReports>
+                        <targetModules>
+                            <param>unit-tests</param>
+                        </targetModules>
+                        <skippedModules>
+                            <param>eclipse-collections-code-generator</param>
+                            <param>eclipse-collections-code-generator-maven-plugin</param>
+                            <param>p2-feature</param>
+                            <param>p2-repository</param>
+                            <param>p2-repository</param>
+                        </skippedModules>
+                        <avoidCallsTo>
+                            <avoidCallsTo>java.util.logging</avoidCallsTo>
+                            <avoidCallsTo>org.apache.log4j</avoidCallsTo>
+                            <avoidCallsTo>org.slf4j</avoidCallsTo>
+                            <avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+                        </avoidCallsTo>
+                        <maxMutationsPerClass>1</maxMutationsPerClass>
+                        <excludedClasses>
+                            <param>org.eclipse.collections.impl.lazy.parallel*</param>
+                            <param>org.eclipse.collections.impl.parallel*</param>
+                            <param>org.eclipse.collections.impl.map.mutable.Concurrent*</param>
+                            <param>org.eclipse.collections.impl.collector.Collectors2</param>
+                            <param>java.util.stream.*</param>
+                            <param>org.eclipse.collections.impl.*Char*</param>
+                            <param>org.eclipse.collections.impl.*Float*</param>
+                            <param>org.eclipse.collections.impl.*Long*</param>
+                            <param>org.eclipse.collections.impl.*Double*</param>
+                            <param>org.eclipse.collections.impl.*Byte*</param>
+                            <param>org.eclipse.collections.impl.*Short*</param>
+                            <param>org.eclipse.collections.impl.*Iterable*</param>
+                            <param>org.eclipse.collections.impl.*Multimap*</param>
+                            <param>org.eclipse.collections.impl.*Composite*</param>
+                            <param>org.eclipse.collections.impl.*Interval*</param>
+                            <param>org.eclipse.collections.impl.*Adapter*</param>
+                            <param>org.eclipse.collections.impl.*Concurrent*</param>
+                            <param>org.eclipse.collections.impl.*Parallel*</param>
+                            <param>org.eclipse.collections.impl.*Synchronized*</param>
+                            <param>org.eclipse.collections.impl.*Unmodifiable*</param>
+                            <param>org.eclipse.collections.impl.*Immutable*</param>
+                            <param>org.eclipse.collections.impl.*MultiReader*</param>
+                            <param>org.eclipse.collections.impl.*FixedSize*</param>
+                            <param>org.eclipse.collections.impl.*Collectors*</param>
+                        </excludedClasses>
+                        <excludedTestClasses>
+                            <param>org.eclipse.collections.impl.lazy.parallel*</param>
+                            <param>org.eclipse.collections.impl.parallel*</param>
+                            <param>org.eclipse.collections.impl.*Char*</param>
+                            <param>org.eclipse.collections.impl.*Float*</param>
+                            <param>org.eclipse.collections.impl.*Long*</param>
+                            <param>org.eclipse.collections.impl.*Double*</param>
+                            <param>org.eclipse.collections.impl.*Byte*</param>
+                            <param>org.eclipse.collections.impl.*Short*</param>
+                            <param>org.eclipse.collections.impl.*Iterable*</param>
+                            <param>org.eclipse.collections.impl.*Multimap*</param>
+                            <param>org.eclipse.collections.impl.*Composite*</param>
+                            <param>org.eclipse.collections.impl.*Interval*</param>
+                            <param>org.eclipse.collections.impl.*Adapter*</param>
+                            <param>org.eclipse.collections.impl.*Concurrent*</param>
+                            <param>org.eclipse.collections.impl.*Parallel*</param>
+                            <param>org.eclipse.collections.impl.*Synchronized*</param>
+                            <param>org.eclipse.collections.impl.*Unmodifiable*</param>
+                            <param>org.eclipse.collections.impl.*Immutable*</param>
+                            <param>org.eclipse.collections.impl.*MultiReader*</param>
+                            <param>org.eclipse.collections.impl.*FixedSize*</param>
+                            <param>org.eclipse.collections.impl.*Collectors*</param>
+                        </excludedTestClasses>
+                    </configuration>
+                </plugin>
 
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.2.0</version>
                 </plugin>
 
                 <plugin>
@@ -222,7 +297,7 @@
 
                 <plugin>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                     <executions>
                         <execution>
                             <id>analyze</id>
@@ -259,12 +334,12 @@
 
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.0</version>
                 </plugin>
 
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.2.0</version>
                 </plugin>
 
                 <plugin>
@@ -284,12 +359,12 @@
 
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.8.2</version>
+                    <version>3.9.0</version>
                 </plugin>
 
                 <plugin>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.1</version>
                     <executions>
                         <execution>
                             <phase>verify</phase>
@@ -347,7 +422,7 @@
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
-                    <version>4.0.2</version>
+                    <version>4.3.1</version>
                     <configuration>
                         <scalaVersion>${scala.version}</scalaVersion>
                     </configuration>
@@ -367,9 +442,15 @@
                     <version>${jacoco.plugin.version}</version>
                     <executions>
                         <execution>
-                            <id>default-prepare-agent</id>
                             <goals>
                                 <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -471,6 +552,19 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-maven-plugin</artifactId>
+                    <version>5.1.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>bnd-process</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -487,19 +581,30 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
+                    <source>${maven.compiler.source}</source>
                     <doctitle>Eclipse Collections - ${project.version}</doctitle>
                     <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                     <show>public</show>
                     <detectJavaApiLink>true</detectJavaApiLink>
                     <links>
                         <link>http://junit.sourceforge.net/javadoc/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
                     </links>
                     <destDir>${project.version}</destDir>
                     <doclint>html,syntax,accessibility</doclint>
                     <excludePackageNames>
-                        org.openjdk,org.eclipse.collections.impl.jmh,org.eclipse.collections.codegenerator
+                        org.openjdk,org.eclipse.collections.impl.jmh,org.eclipse.collections.codegenerator,org.eclipse.collections.codegenerator.maven
                     </excludePackageNames>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -540,13 +645,24 @@
                     <detectJavaApiLink>true</detectJavaApiLink>
                     <links>
                         <link>http://junit.sourceforge.net/javadoc/</link>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
                     </links>
                     <destDir>${project.version}</destDir>
                     <doclint>html,syntax,accessibility</doclint>
                     <excludePackageNames>
-                        org.openjdk,org.eclipse.collections.impl.jmh,org.eclipse.collections.codegenerator
+                        org.openjdk,org.eclipse.collections.impl.jmh,org.eclipse.collections.codegenerator,org.eclipse.collections.codegenerator.maven
                     </excludePackageNames>
+                    <additionalOptions>-html5</additionalOptions>
                 </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <inherited>false</inherited>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
 
             <plugin>

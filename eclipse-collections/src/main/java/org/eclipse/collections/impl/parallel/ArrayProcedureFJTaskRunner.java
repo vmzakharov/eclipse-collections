@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -54,8 +54,13 @@ public final class ArrayProcedureFJTaskRunner<T, BT extends Procedure<? super T>
         int sectionSize = array.length / this.taskCount;
         for (int index = 0; index < this.taskCount; index++)
         {
-            ArrayProcedureFJTask<T, BT> procedureFJTask = new ArrayProcedureFJTask<>(this, procedureFactory, array, index,
-                    sectionSize, index == this.taskCount - 1);
+            ArrayProcedureFJTask<T, BT> procedureFJTask = new ArrayProcedureFJTask<>(
+                    this,
+                    procedureFactory,
+                    array,
+                    index,
+                    sectionSize,
+                    index == this.taskCount - 1);
             this.procedures[index] = procedureFJTask;
             executor.execute(procedureFJTask);
         }

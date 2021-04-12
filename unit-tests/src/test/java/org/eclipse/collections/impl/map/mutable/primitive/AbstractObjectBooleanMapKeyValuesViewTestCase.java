@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -117,7 +117,8 @@ public abstract class AbstractObjectBooleanMapKeyValuesViewTestCase
         MutableBag<ObjectBooleanPair<Integer>> result = Bags.mutable.of();
         MutableBag<Integer> result2 = Bags.mutable.of();
         RichIterable<ObjectBooleanPair<Integer>> collection = this.newWith(1, true, 2, false, 3, true);
-        collection.forEachWith((argument1, argument2) -> {
+        collection.forEachWith((argument1, argument2) ->
+        {
             result.add(argument1);
             result2.add(argument2);
         }, 0);
@@ -132,7 +133,8 @@ public abstract class AbstractObjectBooleanMapKeyValuesViewTestCase
         MutableBag<ObjectBooleanPair<Integer>> elements = Bags.mutable.of();
         MutableBag<Integer> indexes = Bags.mutable.of();
         RichIterable<ObjectBooleanPair<Integer>> collection = this.newWith(1, true, 2, false, 3, true);
-        collection.forEachWithIndex((object, index) -> {
+        collection.forEachWithIndex((object, index) ->
+        {
             elements.add(object);
             indexes.add(index);
         });
@@ -439,7 +441,7 @@ public abstract class AbstractObjectBooleanMapKeyValuesViewTestCase
         }
 
         Assert.assertFalse(iterator.hasNext());
-        Verify.assertThrows(UnsupportedOperationException.class, iterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator::remove);
         Assert.assertEquals(objects.toBag(), actual);
     }
 

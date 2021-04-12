@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -35,6 +34,7 @@ import org.eclipse.collections.api.list.primitive.MutableLongList;
 import org.eclipse.collections.api.list.primitive.MutableShortList;
 import org.eclipse.collections.api.partition.list.PartitionMutableList;
 import org.eclipse.collections.api.stack.MutableStack;
+import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.api.tuple.primitive.ObjectIntPair;
 import org.eclipse.collections.impl.block.factory.Comparators;
 import org.eclipse.collections.impl.block.factory.HashingStrategies;
@@ -62,6 +62,7 @@ import org.eclipse.collections.impl.list.mutable.primitive.IntArrayList;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.test.SerializeTestHelper;
 import org.eclipse.collections.impl.test.Verify;
+import org.eclipse.collections.impl.tuple.Tuples;
 import org.eclipse.collections.impl.tuple.primitive.PrimitiveTuples;
 import org.junit.Assert;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public abstract class AbstractListTestCase
     @Test
     public void randomAccess_throws()
     {
-        Verify.assertThrows(IllegalArgumentException.class, () -> new ListAdapter<>(FastList.newListWith(1, 2, 3)));
+        Assert.assertThrows(IllegalArgumentException.class, () -> new ListAdapter<>(FastList.newListWith(1, 2, 3)));
     }
 
     @Test
@@ -363,8 +364,8 @@ public abstract class AbstractListTestCase
         collection.forEach(3, 0, CollectionAddProcedure.on(result4));
         Assert.assertEquals(this.newWith(4, 3, 2, 1), result4);
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> collection.forEach(-1, 0, result::add));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> collection.forEach(0, -1, result::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> collection.forEach(-1, 0, result::add));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> collection.forEach(0, -1, result::add));
     }
 
     @Test
@@ -768,8 +769,12 @@ public abstract class AbstractListTestCase
         Assert.assertEquals("19282736353443424140", builder5.toString());
 
         MutableList<Integer> result = Lists.mutable.empty();
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers.forEachWithIndex(-1, 0, new AddToList(result)));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> integers.forEachWithIndex(0, -1, new AddToList(result)));
+        Assert.assertThrows(
+                IndexOutOfBoundsException.class,
+                () -> integers.forEachWithIndex(-1, 0, new AddToList(result)));
+        Assert.assertThrows(
+                IndexOutOfBoundsException.class,
+                () -> integers.forEachWithIndex(0, -1, new AddToList(result)));
     }
 
     @Test
@@ -824,7 +829,7 @@ public abstract class AbstractListTestCase
         this.validateForEachOnRange(list, 9, 9, FastList.newListWith(9));
         this.validateForEachOnRange(list, 0, 9, FastList.newListWith(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
 
-        Verify.assertThrows(
+        Assert.assertThrows(
                 IndexOutOfBoundsException.class,
                 () -> this.validateForEachOnRange(list, 10, 10, FastList.newList()));
     }
@@ -852,7 +857,7 @@ public abstract class AbstractListTestCase
         this.validateForEachWithIndexOnRange(list, 4, 6, FastList.newListWith(4, 5, 6));
         this.validateForEachWithIndexOnRange(list, 9, 9, FastList.newListWith(9));
         this.validateForEachWithIndexOnRange(list, 0, 9, FastList.newListWith(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
-        Verify.assertThrows(
+        Assert.assertThrows(
                 IndexOutOfBoundsException.class,
                 () -> this.validateForEachWithIndexOnRange(list, 10, 10, FastList.newList()));
     }
@@ -921,7 +926,7 @@ public abstract class AbstractListTestCase
     {
         Object item = new Object();
 
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> this.newWith(item).get(1));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> this.newWith(item).get(1));
     }
 
     @Test
@@ -936,7 +941,8 @@ public abstract class AbstractListTestCase
         }
         catch (Exception e)
         {
-            Assert.assertTrue((e instanceof ArrayIndexOutOfBoundsException) || (e instanceof IndexOutOfBoundsException));
+            Assert.assertTrue((e instanceof ArrayIndexOutOfBoundsException)
+                    || (e instanceof IndexOutOfBoundsException));
         }
     }
 
@@ -945,9 +951,8 @@ public abstract class AbstractListTestCase
     {
         int sum = 0;
         MutableList<Integer> integers = this.newWith(1, 2, 3, 4);
-        for (Iterator<Integer> iterator = integers.listIterator(); iterator.hasNext(); )
+        for (Integer each : integers)
         {
-            Integer each = iterator.next();
             sum += each.intValue();
         }
         for (ListIterator<Integer> iterator = integers.listIterator(4); iterator.hasPrevious(); )
@@ -1134,6 +1139,37 @@ public abstract class AbstractListTestCase
         });
         Assert.assertEquals(FastList.newListWith(1, 2, 3, 4), elements);
         Assert.assertEquals(IntArrayList.newListWith(0, 1, 2, 3), indexes);
+    }
+
+    @Test
+    public void forEachInBoth()
+    {
+        MutableList<Pair<Integer, String>> result = Lists.mutable.empty();
+        ListIterable<Integer> integers = this.newWith(1, 2, 3);
+        ImmutableList<String> strings = this.newWith("1", "2", "3").toImmutable();
+        integers.forEachInBoth(strings, (integer, string) -> result.add(Tuples.pair(integer, string)));
+        Assert.assertEquals(
+                Lists.immutable.with(Tuples.pair(1, "1"), Tuples.pair(2, "2"), Tuples.pair(3, "3")),
+                result);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void forEachInBothThrowsOnDifferentListSizes()
+    {
+        MutableList<Pair<Integer, String>> result = Lists.mutable.empty();
+        ListIterable<Integer> integers = this.newWith(1, 2, 3);
+        ImmutableList<String> strings = this.newWith("1", "2").toImmutable();
+        integers.forEachInBoth(
+                strings,
+                (integer, string) -> result.add(Tuples.pair(integer, string)));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void forEachInBothThrowsOnNullList()
+    {
+        MutableList<Object> result = Lists.mutable.empty();
+        ListIterable<Integer> integers = this.newWith(1, 2, 3);
+        integers.forEachInBoth(null, (a, b) -> result.add(b));
     }
 
     @Test

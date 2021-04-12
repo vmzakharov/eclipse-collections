@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -28,6 +28,7 @@ import org.eclipse.collections.api.block.function.Function;
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.block.predicate.Predicate2;
 import org.eclipse.collections.api.block.predicate.primitive.IntPredicate;
+import org.eclipse.collections.api.block.predicate.primitive.ObjectIntPredicate;
 import org.eclipse.collections.api.block.procedure.Procedure;
 import org.eclipse.collections.api.block.procedure.Procedure2;
 import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
@@ -192,6 +193,31 @@ public class TreeBag<T>
     {
         Counter counter = this.items.get(item);
         return counter == null ? 0 : counter.getCount();
+    }
+
+    @Override
+    public boolean anySatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return this.items.keyValuesView().anySatisfy(each -> predicate.accept(each.getOne(), each.getTwo().getCount()));
+    }
+
+    @Override
+    public boolean allSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return this.items.keyValuesView().allSatisfy(each -> predicate.accept(each.getOne(), each.getTwo().getCount()));
+    }
+
+    @Override
+    public boolean noneSatisfyWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        return this.items.keyValuesView().noneSatisfy(each -> predicate.accept(each.getOne(), each.getTwo().getCount()));
+    }
+
+    @Override
+    public T detectWithOccurrences(ObjectIntPredicate<? super T> predicate)
+    {
+        Pair<T, Counter> pair = this.items.keyValuesView().detect(each -> predicate.accept(each.getOne(), each.getTwo().getCount()));
+        return pair == null ? null : pair.getOne();
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -154,9 +154,9 @@ public class UnmodifiableSortedBagTest extends AbstractMutableSortedBagTestCase
         Assert.assertFalse(revIterator.hasNext());
 
         Iterator<Integer> iterator3 = this.newWith(Comparators.reverseNaturalOrder(), 2, 1, 1, 0, -1).iterator();
-        Verify.assertThrows(UnsupportedOperationException.class, iterator3::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator3::remove);
         Assert.assertEquals(Integer.valueOf(2), iterator3.next());
-        Verify.assertThrows(UnsupportedOperationException.class, iterator3::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator3::remove);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class UnmodifiableSortedBagTest extends AbstractMutableSortedBagTestCase
     {
         MutableSortedBag<Integer> bag = this.newWith(-1, 0, 1, 1, 2);
         Iterator<Integer> iterator = bag.iterator();
-        Verify.assertThrows(UnsupportedOperationException.class, iterator::remove);
+        Assert.assertThrows(UnsupportedOperationException.class, iterator::remove);
     }
 
     @Override

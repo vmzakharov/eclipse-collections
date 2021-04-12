@@ -92,6 +92,12 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
         this.addAll(elements);
     }
 
+    public <name>HashSet(<name>Iterable elements)
+    {
+        this();
+        this.addAll(elements);
+    }
+
     public <name>HashSet(<name>HashSet set)
     {
         this.occupiedWithData = set.occupiedWithData;
@@ -114,8 +120,7 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
         {
             return new <name>HashSet((<name>HashSet) source);
         }
-
-        return <name>HashSet.newSetWith(source.toArray());
+        return new <name>HashSet(source);
     }
 
     public static <name>HashSet newSetWith(<type>... source)
@@ -429,7 +434,7 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
     @Override
     public <name>HashSet withAll(<name>Iterable elements)
     {
-        this.addAll(elements.toArray());
+        this.addAll(elements);
         return this;
     }
 
@@ -463,7 +468,17 @@ public class <name>HashSet extends Abstract<name>Set implements Mutable<name>Set
         {
             return <name>Sets.immutable.with(this.<type>Iterator().next());
         }
-        <name>HashSet mutableSet = <name>HashSet.newSetWith(this.toArray());
+        <name>HashSet mutableSet;
+        if (this.table.length == smallestPowerOfTwoGreaterThan(this.size() \<\< 1)) // table is not too big
+        {
+            mutableSet = this;
+            this.copyOnWrite = true;
+        }
+        else
+        {
+            mutableSet = new <name>HashSet(this.size());
+            mutableSet.addAll(this);
+        }
         return new Immutable<name>HashSet(mutableSet.table, mutableSet.occupiedWithData, mutableSet.zeroToThirtyOne, mutableSet.zeroToThirtyOneOccupied);
     }
 

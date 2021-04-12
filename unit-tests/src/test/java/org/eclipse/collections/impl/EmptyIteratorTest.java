@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -12,7 +12,6 @@ package org.eclipse.collections.impl;
 
 import java.util.NoSuchElementException;
 
-import org.eclipse.collections.impl.test.Verify;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class EmptyIteratorTest
     @Test
     public void previous()
     {
-        Verify.assertThrows(NoSuchElementException.class, (Runnable) this.emptyIterator::previous);
+        Assert.assertThrows(NoSuchElementException.class, this.emptyIterator::previous);
     }
 
     @Test
@@ -48,12 +47,12 @@ public class EmptyIteratorTest
     @Test
     public void set()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.emptyIterator.set(1));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.emptyIterator.set(1));
     }
 
     @Test
     public void add()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.emptyIterator.add(1));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.emptyIterator.add(1));
     }
 }

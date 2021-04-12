@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -11,6 +11,7 @@
 package org.eclipse.collections.impl.list.primitive;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -63,12 +64,14 @@ public final class IntInterval
     private final int from;
     private final int to;
     private final int step;
+    private transient int size;
 
     private IntInterval(int from, int to, int step)
     {
         this.from = from;
         this.to = to;
         this.step = step;
+        this.size = IntervalUtils.intSize(this.from, this.to, this.step);
     }
 
     /**
@@ -498,16 +501,16 @@ public final class IntInterval
     @Override
     public ImmutableIntList subList(int fromIndex, int toIndex)
     {
-        throw new UnsupportedOperationException("subList not yet implemented!");
+        return IntInterval.fromToBy(this.get(fromIndex), this.get(toIndex - 1), this.step);
     }
 
     /**
-     * Calculates and returns the size of the interval.
+     * Returns the size of the interval.
      */
     @Override
     public int size()
     {
-        return IntervalUtils.intSize(this.from, this.to, this.step);
+        return this.size;
     }
 
     @Override
@@ -790,12 +793,7 @@ public final class IntInterval
     @Override
     public long sum()
     {
-        long sum = 0L;
-        for (IntIterator intIterator = this.intIterator(); intIterator.hasNext(); )
-        {
-            sum += intIterator.next();
-        }
-        return sum;
+        return (long) this.size() * ((long) this.getFirst() + (long) this.getLast()) / 2L;
     }
 
     @Override
@@ -833,21 +831,14 @@ public final class IntInterval
     @Override
     public double average()
     {
-        return (double) this.sum() / (double) this.size();
+        // for an arithmetic sequence its median and its average are the same
+        return this.median();
     }
 
     @Override
     public double median()
     {
-        int[] sortedArray = this.toSortedArray();
-        int middleIndex = sortedArray.length >> 1;
-        if (sortedArray.length > 1 && (sortedArray.length & 1) == 0)
-        {
-            int first = sortedArray[middleIndex];
-            int second = sortedArray[middleIndex - 1];
-            return ((double) first + (double) second) / 2.0;
-        }
-        return (double) sortedArray[middleIndex];
+        return ((double) this.getFirst() + (double) this.getLast()) / 2.0;
     }
 
     @Override
@@ -1062,5 +1053,12 @@ public final class IntInterval
             }
             return this.current >= this.to;
         }
+    }
+
+    private void readObject(ObjectInputStream ois)
+            throws IOException, ClassNotFoundException
+    {
+        ois.defaultReadObject();
+        this.size = IntervalUtils.intSize(this.from, this.to, this.step);
     }
 }

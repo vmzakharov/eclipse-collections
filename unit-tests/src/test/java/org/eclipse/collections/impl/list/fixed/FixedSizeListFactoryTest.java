@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -39,8 +39,8 @@ public class FixedSizeListFactoryTest
         Assert.assertFalse(list.notEmpty());
         Assert.assertNull(list.getFirst());
         Assert.assertNull(list.getLast());
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
-        Verify.assertThrows(IndexOutOfBoundsException.class, () -> list.set(0, "nope"));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.get(0));
+        Assert.assertThrows(IndexOutOfBoundsException.class, () -> list.set(0, "nope"));
     }
 
     @Test
@@ -200,7 +200,8 @@ public class FixedSizeListFactoryTest
         int[] indexSum = new int[1];
         MutableList<String> result = Lists.mutable.of();
         MutableList<String> source = Lists.fixedSize.of("1", "2", "3", "4", "5", "6");
-        source.forEachWithIndex((each, index) -> {
+        source.forEachWithIndex((each, index) ->
+        {
             result.add(each);
             indexSum[0] += index;
         });

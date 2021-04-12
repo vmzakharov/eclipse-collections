@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -18,8 +18,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 
+import org.eclipse.collections.api.BooleanIterable;
+import org.eclipse.collections.api.ByteIterable;
+import org.eclipse.collections.api.CharIterable;
+import org.eclipse.collections.api.DoubleIterable;
+import org.eclipse.collections.api.FloatIterable;
+import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIterable;
+import org.eclipse.collections.api.LongIterable;
 import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.MutableBag;
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -63,6 +71,7 @@ import org.eclipse.collections.api.list.primitive.MutableFloatList;
 import org.eclipse.collections.api.list.primitive.MutableIntList;
 import org.eclipse.collections.api.list.primitive.MutableLongList;
 import org.eclipse.collections.api.list.primitive.MutableShortList;
+import org.eclipse.collections.api.map.MapIterable;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.MutableMapIterable;
 import org.eclipse.collections.api.map.primitive.MutableObjectDoubleMap;
@@ -80,12 +89,9 @@ import org.eclipse.collections.api.stack.MutableStack;
 import org.eclipse.collections.api.tuple.Pair;
 import org.eclipse.collections.impl.UnmodifiableIteratorAdapter;
 import org.eclipse.collections.impl.block.factory.PrimitiveFunctions;
-import org.eclipse.collections.impl.block.procedure.MutatingAggregationProcedure;
-import org.eclipse.collections.impl.block.procedure.NonMutatingAggregationProcedure;
 import org.eclipse.collections.impl.collection.mutable.UnmodifiableMutableCollection;
 import org.eclipse.collections.impl.factory.primitive.ObjectDoubleMaps;
 import org.eclipse.collections.impl.factory.primitive.ObjectLongMaps;
-import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnmodifiableMutableSet;
 import org.eclipse.collections.impl.tuple.AbstractImmutableEntry;
 import org.eclipse.collections.impl.utility.LazyIterate;
@@ -166,6 +172,18 @@ public class UnmodifiableTreeMap<K, V>
     public MutableSortedMap<K, V> withMap(Map<? extends K, ? extends V> map)
     {
         throw new UnsupportedOperationException("Cannot call withMap() on " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public MutableSortedMap<K, V> withMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        throw new UnsupportedOperationException("Cannot call withMapIterable() on " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void putAllMapIterable(MapIterable<? extends K, ? extends V> mapIterable)
+    {
+        throw new UnsupportedOperationException("Cannot call putAllMapIterable() on " + this.getClass().getSimpleName());
     }
 
     @Override
@@ -1070,6 +1088,13 @@ public class UnmodifiableTreeMap<K, V>
     }
 
     @Override
+    public <R extends MutableBooleanCollection> R flatCollectBoolean(
+            Function<? super V, ? extends BooleanIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectBoolean(function, target);
+    }
+
+    @Override
     public MutableByteList collectByte(ByteFunction<? super V> byteFunction)
     {
         return this.getMutableSortedMap().collectByte(byteFunction);
@@ -1079,6 +1104,13 @@ public class UnmodifiableTreeMap<K, V>
     public <R extends MutableByteCollection> R collectByte(ByteFunction<? super V> byteFunction, R target)
     {
         return this.getMutableSortedMap().collectByte(byteFunction, target);
+    }
+
+    @Override
+    public <R extends MutableByteCollection> R flatCollectByte(
+            Function<? super V, ? extends ByteIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectByte(function, target);
     }
 
     @Override
@@ -1094,6 +1126,13 @@ public class UnmodifiableTreeMap<K, V>
     }
 
     @Override
+    public <R extends MutableCharCollection> R flatCollectChar(
+            Function<? super V, ? extends CharIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectChar(function, target);
+    }
+
+    @Override
     public MutableDoubleList collectDouble(DoubleFunction<? super V> doubleFunction)
     {
         return this.getMutableSortedMap().collectDouble(doubleFunction);
@@ -1103,6 +1142,13 @@ public class UnmodifiableTreeMap<K, V>
     public <R extends MutableDoubleCollection> R collectDouble(DoubleFunction<? super V> doubleFunction, R target)
     {
         return this.getMutableSortedMap().collectDouble(doubleFunction, target);
+    }
+
+    @Override
+    public <R extends MutableDoubleCollection> R flatCollectDouble(
+            Function<? super V, ? extends DoubleIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectDouble(function, target);
     }
 
     @Override
@@ -1118,6 +1164,13 @@ public class UnmodifiableTreeMap<K, V>
     }
 
     @Override
+    public <R extends MutableFloatCollection> R flatCollectFloat(
+            Function<? super V, ? extends FloatIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectFloat(function, target);
+    }
+
+    @Override
     public MutableIntList collectInt(IntFunction<? super V> intFunction)
     {
         return this.getMutableSortedMap().collectInt(intFunction);
@@ -1127,6 +1180,13 @@ public class UnmodifiableTreeMap<K, V>
     public <R extends MutableIntCollection> R collectInt(IntFunction<? super V> intFunction, R target)
     {
         return this.getMutableSortedMap().collectInt(intFunction, target);
+    }
+
+    @Override
+    public <R extends MutableIntCollection> R flatCollectInt(
+            Function<? super V, ? extends IntIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectInt(function, target);
     }
 
     @Override
@@ -1142,6 +1202,13 @@ public class UnmodifiableTreeMap<K, V>
     }
 
     @Override
+    public <R extends MutableLongCollection> R flatCollectLong(
+            Function<? super V, ? extends LongIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectLong(function, target);
+    }
+
+    @Override
     public MutableShortList collectShort(ShortFunction<? super V> shortFunction)
     {
         return this.getMutableSortedMap().collectShort(shortFunction);
@@ -1151,6 +1218,13 @@ public class UnmodifiableTreeMap<K, V>
     public <R extends MutableShortCollection> R collectShort(ShortFunction<? super V> shortFunction, R target)
     {
         return this.getMutableSortedMap().collectShort(shortFunction, target);
+    }
+
+    @Override
+    public <R extends MutableShortCollection> R flatCollectShort(
+            Function<? super V, ? extends ShortIterable> function, R target)
+    {
+        return this.getMutableSortedMap().flatCollectShort(function, target);
     }
 
     @Override
@@ -1229,28 +1303,6 @@ public class UnmodifiableTreeMap<K, V>
     public MutableSet<Entry<K, V>> entrySet()
     {
         return UnmodifiableMutableSet.of(super.entrySet());
-    }
-
-    @Override
-    public <K2, V2> MutableMap<K2, V2> aggregateInPlaceBy(
-            Function<? super V, ? extends K2> groupBy,
-            Function0<? extends V2> zeroValueFactory,
-            Procedure2<? super V2, ? super V> mutatingAggregator)
-    {
-        MutableMap<K2, V2> map = UnifiedMap.newMap();
-        this.forEach(new MutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, mutatingAggregator));
-        return map;
-    }
-
-    @Override
-    public <K2, V2> MutableMap<K2, V2> aggregateBy(
-            Function<? super V, ? extends K2> groupBy,
-            Function0<? extends V2> zeroValueFactory,
-            Function2<? super V2, ? super V, ? extends V2> nonMutatingAggregator)
-    {
-        MutableMap<K2, V2> map = UnifiedMap.newMap();
-        this.forEach(new NonMutatingAggregationProcedure<>(map, groupBy, zeroValueFactory, nonMutatingAggregator));
-        return map;
     }
 
     @Override

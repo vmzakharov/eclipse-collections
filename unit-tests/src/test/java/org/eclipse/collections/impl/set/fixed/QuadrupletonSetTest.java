@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -79,7 +79,7 @@ public class QuadrupletonSetTest extends AbstractMemoryEfficientMutableSetTestCa
     @Test
     public void remove()
     {
-        Verify.assertThrows(UnsupportedOperationException.class, () -> this.set.remove("1"));
+        Assert.assertThrows(UnsupportedOperationException.class, () -> this.set.remove("1"));
     }
 
     @Test
@@ -217,6 +217,6 @@ public class QuadrupletonSetTest extends AbstractMemoryEfficientMutableSetTestCa
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> this.set.getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> this.set.getOnly());
     }
 }

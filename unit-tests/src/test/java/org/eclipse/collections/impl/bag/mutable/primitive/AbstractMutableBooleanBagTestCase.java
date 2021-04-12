@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -281,7 +281,7 @@ public abstract class AbstractMutableBooleanBagTestCase extends AbstractMutableB
     @Test
     public void topOccurrences()
     {
-        Verify.assertThrows(IllegalArgumentException.class, () -> this.newWith().topOccurrences(-1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> this.newWith().topOccurrences(-1));
         Assert.assertTrue(this.newWith().topOccurrences(1).isEmpty());
         Assert.assertEquals(
                 Lists.mutable.with(PrimitiveTuples.pair(true, 2)),
@@ -303,7 +303,7 @@ public abstract class AbstractMutableBooleanBagTestCase extends AbstractMutableB
     @Test
     public void bottomOccurrences()
     {
-        Verify.assertThrows(IllegalArgumentException.class, () -> this.newWith().bottomOccurrences(-1));
+        Assert.assertThrows(IllegalArgumentException.class, () -> this.newWith().bottomOccurrences(-1));
         Assert.assertTrue(this.newWith().bottomOccurrences(1).isEmpty());
         Assert.assertEquals(
                 Lists.mutable.with(PrimitiveTuples.pair(false, 1)),

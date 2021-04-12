@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Goldman Sachs.
+ * Copyright (c) 2021 Goldman Sachs.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -114,6 +114,19 @@ public class ImmutableSingletonMapTest extends ImmutableMemoryEfficientMapTestCa
         Assert.assertNull(map.get(4));
         Assert.assertEquals("4", map.getIfAbsent(4, new PassThruFunction0<>("4")));
         Assert.assertEquals("1", map.getIfAbsent(1, new PassThruFunction0<>("1")));
+        Assert.assertEquals(UnifiedMap.newWithKeysValues(1, "1"), map);
+    }
+
+    @Override
+    @Test
+    public void getOrDefault()
+    {
+        super.getOrDefault();
+
+        ImmutableMap<Integer, String> map = this.classUnderTest();
+        Assert.assertNull(map.get(4));
+        Assert.assertEquals("4", map.getOrDefault(4, "4"));
+        Assert.assertEquals("1", map.getOrDefault(1, "1"));
         Assert.assertEquals(UnifiedMap.newWithKeysValues(1, "1"), map);
     }
 

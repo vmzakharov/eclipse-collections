@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Goldman Sachs and others.
+ * Copyright (c) 2021 Goldman Sachs and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -197,6 +197,42 @@ public class ImmutableEmptySortedBagTest extends AbstractImmutableSortedBagTestC
         MutableList<Integer> mutableList = Lists.mutable.empty();
         this.classUnderTest().forEachWithIndex(0, 0, (each, index) -> mutableList.add(each + index));
         Verify.assertEmpty(mutableList);
+    }
+
+    @Override
+    @Test
+    public void anySatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.classUnderTest();
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> true));
+        Assert.assertFalse(bag.anySatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void allSatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.classUnderTest();
+        Assert.assertTrue(bag.allSatisfyWithOccurrences((object, value) -> true));
+        Assert.assertTrue(bag.allSatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void noneSatisfyWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.classUnderTest();
+        Assert.assertTrue(bag.noneSatisfyWithOccurrences((object, value) -> true));
+        Assert.assertTrue(bag.noneSatisfyWithOccurrences((object, value) -> false));
+    }
+
+    @Override
+    @Test
+    public void detectWithOccurrences()
+    {
+        ImmutableSortedBag<Integer> bag = this.classUnderTest();
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> true));
+        Assert.assertNull(bag.detectWithOccurrences((object, value) -> false));
     }
 
     @Override
@@ -586,7 +622,7 @@ public class ImmutableEmptySortedBagTest extends AbstractImmutableSortedBagTestC
     @Test
     public void getOnly()
     {
-        Verify.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
+        Assert.assertThrows(IllegalStateException.class, () -> this.classUnderTest().getOnly());
     }
 
     @Override

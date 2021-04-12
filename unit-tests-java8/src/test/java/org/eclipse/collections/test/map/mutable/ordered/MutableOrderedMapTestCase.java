@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Two Sigma and others.
+ * Copyright (c) 2021 Two Sigma and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -33,7 +33,7 @@ public interface MutableOrderedMapTestCase extends OrderedMapIterableTestCase, M
     {
         MutableOrderedMap<Integer, String> map = this.newWithKeysValues(1, "1", 2, "Two", 3, "Three");
 
-        Verify.assertThrows(NullPointerException.class, () -> map.removeAllKeys(null));
+        Assert.assertThrows(NullPointerException.class, () -> map.removeAllKeys(null));
         Assert.assertFalse(map.removeAllKeys(Sets.mutable.empty()));
         Assert.assertFalse(map.removeAllKeys(Sets.mutable.with(4)));
         Assert.assertFalse(map.removeAllKeys(Sets.mutable.with(4, 5, 6)));
