@@ -56,6 +56,7 @@ The current GA release of Eclipse Collections (11.1.0) is compatible with Java 8
 
 ## Learn Eclipse Collections
 
+* **Book**: [Eclipse Collections Categorically: Level up your programming game](https://donraab.medium.com/book-eclipse-collections-categorically-37591b2135f5?source=friends_link&sk=03cc75fec4052e377444ede49d6c55b2)
 * Blog Series: [Getting Started with Eclipse Collections][BlogGettingStartedWithEclipseCollections]
 * Blog Series: [The missing Java data structures no one ever told you about][BlogTheMissingJavaDataStructures]
 * Blog: [Java has Streams. Do we need third-party collections?][BlogJavaHasStreamsDoWeNeedCollections]
