@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2022 Goldman Sachs and others.
+  ~ Copyright (c) 2025 Goldman Sachs and others.
   ~ All rights reserved. This program and the accompanying materials
   ~ are made available under the terms of the Eclipse Public License v1.0
   ~ and Eclipse Distribution License v. 1.0 which accompany this distribution.
@@ -27,7 +27,7 @@
 #### [English](https://eclipse.dev/collections/) | [Deutsch](https://eclipse.dev/collections/de/index.html) | [Ελληνικά](https://eclipse.dev/collections/el/index.html) | [Español](https://eclipse.dev/collections/es/index.html) | [中文](https://eclipse.dev/collections/cn/index.html) | [Français](https://eclipse.dev/collections/fr/index.html) | [日本語](https://eclipse.dev/collections/ja/index.html) | [Norsk (bokmål)](https://eclipse.dev/collections/no-nb/index.html) | [Português-Brasil](https://eclipse.dev/collections/pt-br/index.html) | [Русский](https://eclipse.dev/collections/ru/index.html) | [हिंदी](https://eclipse.dev/collections/hi/index.html) | [Srpski (latinica)](https://eclipse.dev/collections/sr-rs-latn/index.html)
 Eclipse Collections is a comprehensive collections library for Java. The library enables productivity and performance by delivering an expressive and efficient set of APIs and types. The iteration protocol was inspired by the Smalltalk collection framework, and the collections are compatible with the Java Collection Framework types.
 
-Eclipse Collections is compatible with Java 8+. Eclipse Collections is a part of the OpenJDK [Quality Outreach](https://wiki.openjdk.java.net/display/quality/Quality+Outreach) program, and it is validated for different versions of the OpenJDK.
+The current GA release of Eclipse Collections (11.1.0) is compatible with Java 8+. Eclipse Collections 12.x will be compatible with Java 11+. Eclipse Collections is a part of the OpenJDK [Quality Outreach](https://wiki.openjdk.java.net/display/quality/Quality+Outreach) program, and it is validated for different versions of the OpenJDK.
 
 ## Why Eclipse Collections?
 
