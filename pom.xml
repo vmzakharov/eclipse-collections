@@ -801,6 +801,9 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <classifier>alt-sources</classifier>
+                        </configuration>
                     </plugin>
                     <!--endregion Phase 17: package-->
                 </plugins>
