@@ -326,7 +326,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
 
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.11.2</version>
                 </plugin>
 
                 <plugin>
@@ -531,7 +531,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
+                    <source>11</source>
                     <doctitle>Eclipse Collections - ${project.version}</doctitle>
                     <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                     <show>public</show>
@@ -589,6 +589,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
         <profile>
             <id>java-8</id>
 
+            <!--Keep this to Java 8 as we do not want JMH to be running for every build-->
             <activation>
                 <jdk>1.8</jdk>
             </activation>
@@ -777,6 +778,35 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             </distributionManagement>
         </profile>
 
+        <profile>
+            <id>release-artifacts-dry-run</id>
+            <activation>
+                <property>
+                    <name>performDryRunRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!--region Phase 17: package-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>create source jar</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--endregion Phase 17: package-->
+                </plugins>
+            </build>
+        </profile>
+
         <!--region Phase 1: validate-->
         <profile>
             <id>maven-enforcer-plugin</id>
@@ -802,7 +832,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                                     <rules>
                                         <dependencyConvergence />
                                         <requireJavaVersion>
-                                            <version>1.8.0</version>
+                                            <version>11</version>
                                         </requireJavaVersion>
                                         <requirePluginVersions>
                                             <banLatest>true</banLatest>
@@ -1068,7 +1098,37 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                     <plugin>
                         <groupId>biz.aQute.bnd</groupId>
                         <artifactId>bnd-maven-plugin</artifactId>
-                        <version>7.0.0</version>
+                        <version>6.4.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bnd-process</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--endregion Phase 8: process-classes-->
+
+        <!--region Phase 8: process-classes-->
+        <profile>
+            <id>bnd-maven-plugin-dry-run</id>
+
+            <activation>
+                <property>
+                    <name>performDryRunRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>biz.aQute.bnd</groupId>
+                        <artifactId>bnd-maven-plugin</artifactId>
+                        <version>6.4.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -1123,9 +1183,9 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.10.0</version>
+                        <version>3.11.2</version>
                         <configuration>
-                            <source>1.8</source>
+                            <source>11</source>
                             <doctitle>Eclipse Collections - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                             <show>public</show>
