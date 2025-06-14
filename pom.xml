@@ -778,38 +778,6 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             </distributionManagement>
         </profile>
 
-        <profile>
-            <id>release-artifacts-dry-run</id>
-            <activation>
-                <property>
-                    <name>performDryRunRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <!--region Phase 17: package-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.3.1</version>
-                        <executions>
-                            <execution>
-                                <id>create source jar</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <classifier>alt-sources</classifier>
-                        </configuration>
-                    </plugin>
-                    <!--endregion Phase 17: package-->
-                </plugins>
-            </build>
-        </profile>
-
         <!--region Phase 1: validate-->
         <profile>
             <id>maven-enforcer-plugin</id>
@@ -1092,36 +1060,6 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             <activation>
                 <property>
                     <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
-
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>biz.aQute.bnd</groupId>
-                        <artifactId>bnd-maven-plugin</artifactId>
-                        <version>6.4.0</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>bnd-process</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!--endregion Phase 8: process-classes-->
-
-        <!--region Phase 8: process-classes-->
-        <profile>
-            <id>bnd-maven-plugin-dry-run</id>
-
-            <activation>
-                <property>
-                    <name>performDryRunRelease</name>
                     <value>true</value>
                 </property>
             </activation>
