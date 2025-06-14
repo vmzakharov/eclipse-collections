@@ -531,7 +531,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
+                    <source>11</source>
                     <doctitle>Eclipse Collections - ${project.version}</doctitle>
                     <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                     <show>public</show>
@@ -589,6 +589,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
         <profile>
             <id>java-8</id>
 
+            <!--Keep this to Java 8 as we do not want JMH to be running for every build-->
             <activation>
                 <jdk>1.8</jdk>
             </activation>
@@ -831,7 +832,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                                     <rules>
                                         <dependencyConvergence />
                                         <requireJavaVersion>
-                                            <version>1.8.0</version>
+                                            <version>11</version>
                                         </requireJavaVersion>
                                         <requirePluginVersions>
                                             <banLatest>true</banLatest>
@@ -1184,7 +1185,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>3.11.2</version>
                         <configuration>
-                            <source>1.8</source>
+                            <source>11</source>
                             <doctitle>Eclipse Collections - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                             <show>public</show>
