@@ -1111,6 +1111,36 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
         </profile>
         <!--endregion Phase 8: process-classes-->
 
+        <!--region Phase 8: process-classes-->
+        <profile>
+            <id>bnd-maven-plugin-dry-run</id>
+
+            <activation>
+                <property>
+                    <name>performDryRunRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>biz.aQute.bnd</groupId>
+                        <artifactId>bnd-maven-plugin</artifactId>
+                        <version>6.4.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>bnd-process</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--endregion Phase 8: process-classes-->
+
         <!--region Phase 16: prepare-package-->
         <profile>
             <id>jacoco-maven-plugin</id>
