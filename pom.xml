@@ -535,7 +535,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                     <doctitle>Eclipse Collections - ${project.version}</doctitle>
                     <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                     <show>public</show>
-                    <detectJavaApiLink>true</detectJavaApiLink>
+                    <detectJavaApiLink>false</detectJavaApiLink>
                     <links>
                         <link>https://junit.org/junit4/javadoc/latest</link>
                         <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
@@ -757,7 +757,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                             <doctitle>Eclipse Collections - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                             <show>public</show>
-                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <detectJavaApiLink>false</detectJavaApiLink>
                             <links>
                                 <link>https://junit.org/junit4/javadoc/latest</link>
                                 <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
@@ -1146,7 +1146,7 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                             <doctitle>Eclipse Collections - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                             <show>public</show>
-                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <detectJavaApiLink>false</detectJavaApiLink>
                             <links>
                                 <link>https://junit.org/junit4/javadoc/latest</link>
                                 <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
