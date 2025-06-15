@@ -30,8 +30,8 @@
 
         <!-- versions used for plug-ins below -->
         <!-- From Tycho 3.0 Java 17 is required as runtime VM -->
-        <tycho-version>4.0.7</tycho-version>
-        <tycho-extras-version>4.0.7</tycho-extras-version>
+        <tycho-version>4.0.13</tycho-version>
+        <tycho-extras-version>4.0.13</tycho-extras-version>
 
         <!-- pattern/format used for the qualifier -->
         <qualifier.format>'v'yyyyMMdd-HHmm</qualifier.format>
