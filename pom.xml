@@ -1087,10 +1087,12 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
                         <groupId>biz.aQute.bnd</groupId>
                         <artifactId>bnd-maven-plugin</artifactId>
                         <version>7.1.0</version>
+                        <extensions>true</extensions>
                         <executions>
                             <execution>
+                                <id>jar</id>
                                 <goals>
-                                    <goal>bnd-process</goal>
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
