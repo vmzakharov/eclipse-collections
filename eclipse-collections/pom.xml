@@ -151,6 +151,7 @@
                             </links>
                             <destDir>${project.version}</destDir>
                             <doclint>none</doclint>
+                            <legacyMode>true</legacyMode>
                         </configuration>
                     </plugin>
                 </plugins>
