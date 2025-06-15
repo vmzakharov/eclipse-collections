@@ -133,6 +133,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <source>8</source>
                             <doctitle>Eclipse Collections API - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections API - ${project.version}</windowtitle>
                             <show>public</show>

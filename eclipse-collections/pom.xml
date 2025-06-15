@@ -142,6 +142,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <source>8</source>
                             <doctitle>Eclipse Collections - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
                             <show>public</show>
