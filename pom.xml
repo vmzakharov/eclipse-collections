@@ -531,8 +531,6 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
-                    <!-- Keep this as Java 8 due to known issues with Java 11 and Javadocs.
-                    See: https://bugs.openjdk.org/browse/JDK-8212233 -->
                     <source>1.8</source>
                     <doctitle>Eclipse Collections - ${project.version}</doctitle>
                     <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
@@ -753,14 +751,30 @@ Arrays, Maps or Strings. The iteration protocol was inspired by the Smalltalk co
 
                     <!--region Phase 17: package-->
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.2.1</version>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <source>1.8</source>
+                            <doctitle>Eclipse Collections - ${project.version}</doctitle>
+                            <windowtitle>Eclipse Collections - ${project.version}</windowtitle>
+                            <show>public</show>
+                            <detectJavaApiLink>true</detectJavaApiLink>
+                            <links>
+                                <link>https://junit.org/junit4/javadoc/latest</link>
+                                <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
+                            </links>
+                            <destDir>${project.version}</destDir>
+                            <doclint>html,syntax,accessibility</doclint>
+                            <excludePackageNames>
+                                org.openjdk,org.eclipse.collections.impl.jmh,org.eclipse.collections.codegenerator.maven
+                            </excludePackageNames>
+
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>create source jar</id>
+                                <id>aggregate</id>
+                                <inherited>false</inherited>
                                 <goals>
-                                    <goal>jar-no-fork</goal>
+                                    <goal>aggregate</goal>
                                 </goals>
                             </execution>
                         </executions>

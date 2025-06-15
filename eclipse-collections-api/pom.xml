@@ -131,12 +131,15 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.5.0</version>
                         <configuration>
                             <doctitle>Eclipse Collections API - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections API - ${project.version}</windowtitle>
+                            <show>public</show>
+                            <links>
+                                <link>https://docs.oracle.com/en/java/javase/11/docs/api</link>
+                            </links>
+                            <destDir>${project.version}</destDir>
                             <doclint>none</doclint>
                         </configuration>
                     </plugin>

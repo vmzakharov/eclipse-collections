@@ -113,11 +113,15 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <doctitle>Eclipse Collections Fork Join Utilities - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections Fork Join Utilities - ${project.version}</windowtitle>
+                            <show>public</show>
+                            <links>
+                                <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                            </links>
+                            <destDir>${project.version}</destDir>
                             <doclint>none</doclint>
                         </configuration>
                     </plugin>
