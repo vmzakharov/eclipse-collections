@@ -115,7 +115,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <source>8</source>
+                            <source>17</source>
                             <doctitle>Eclipse Collections Fork Join Utilities - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections Fork Join Utilities - ${project.version}</windowtitle>
                             <show>public</show>
