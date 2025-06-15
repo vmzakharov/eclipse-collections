@@ -120,6 +120,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
+                            <source>8</source>
                             <doctitle>Eclipse Collections Test Utilities - ${project.version}</doctitle>
                             <windowtitle>Eclipse Collections Test Utilities - ${project.version}</windowtitle>
                             <show>public</show>
