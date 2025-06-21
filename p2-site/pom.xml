@@ -52,6 +52,70 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>maven-dependency-plugin</id>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <artifactId>maven-dependency-plugin</artifactId>
+                            <version>3.8.1</version>
+                            <configuration>
+                                <failOnWarning>true</failOnWarning>
+                                <ignoredUnusedDeclaredDependencies>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:eclipse-collections-code-generator:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:eclipse-collections-api:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:eclipse-collections:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:eclipse-collections-testutils:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:eclipse-collections-forkjoin:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:unit-tests:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:serialization-tests:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:jcstress-tests:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                    <ignoredUnusedDeclaredDependency>
+                                        org.eclipse.collections:unit-tests-java8:jar
+                                    </ignoredUnusedDeclaredDependency>
+                                </ignoredUnusedDeclaredDependencies>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>analyze</id>
+                                    <goals>
+                                        <goal>analyze-only</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
     <pluginRepositories>
         <pluginRepository>
             <id>cbi-releases</id>
